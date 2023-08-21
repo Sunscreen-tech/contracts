@@ -1,0 +1,54 @@
+name: test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+env:
+  FOUNDRY_REV: d73c9a1de0dbfaa9ffaeb7e82839ff09f302ac0b
+
+jobs:
+  test:
+    strategy:
+      fail-fast: true
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Restore forge binary if cached
+        uses: actions/cache/restore@v3
+        id: cache
+        with:
+          path: ~/.cargo/bin/forge
+          key: ${{ runner.os }}-${{ env.FOUNDRY_REV }}-forge
+
+      - name: Install forge
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          cargo install \
+            --git https://github.com/Sunscreen-tech/foundry \
+            --rev ${{ env.FOUNDRY_REV }} \
+            --profile local forge
+
+      - name: Save new forge binary
+        if: steps.cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v3
+        with:
+          path: ~/.cargo/bin/forge
+          key: ${{ runner.os }}-${{ env.FOUNDRY_REV }}-forge
+
+      - name: Run Forge build
+        run: |
+          forge --version
+          forge build --sizes
+        id: build
+
+      - name: Run Forge tests
+        run: |
+          forge test -vvv
+        id: test
