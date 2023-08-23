@@ -45,7 +45,6 @@ contract FHETest is Test {
         vm.resumeGasMetering();
     }
 
-
     /**
      *
      * uint256 operations
@@ -547,7 +546,7 @@ contract FHETest is Test {
 
     function testEncryptFrac64() public {
         vm.pauseGasMetering();
-        bytes memory c_enc = fhe.encryptFrac64(frac64_5 );
+        bytes memory c_enc = fhe.encryptFrac64(frac64_5);
         assert(c_enc.length > 0);
         vm.resumeGasMetering();
     }

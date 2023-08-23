@@ -19,7 +19,6 @@ contract FHE {
     uint256 public constant REENCRYPT_GAS = 2000;
     uint256 public constant NETWORK_PUBLIC_KEY_GAS = 0;
 
-
     // Precompile addresses
     uint256 public constant FHE_ADDRESS_NAMESPACE = 0xf0_00_00_00;
     uint256 public constant FHE_ADDRESS_UINT256_NAMESPACE = 0x00_00_00_00;
@@ -38,8 +37,8 @@ contract FHE {
     uint256 public constant FHE_ENCRYPT_ADDRESS = 0x00_00_00_10;
     uint256 public constant FHE_REENCRYPT_ADDRESS = 0x00_00_00_20;
 
-    uint256 public constant FHE_NETWORK_PUBLIC_KEY_ADDRESS = FHE_ADDRESS_NAMESPACE | FHE_NETWORK_API_NAMESPACE | FHE_NETWORK_KEY_ADDRESS;
-
+    uint256 public constant FHE_NETWORK_PUBLIC_KEY_ADDRESS =
+        FHE_ADDRESS_NAMESPACE | FHE_NETWORK_API_NAMESPACE | FHE_NETWORK_KEY_ADDRESS;
 
     // uint256
     uint256 public constant ADD_CIPHERUINT256CIPHERUINT256_ADDRESS =
@@ -64,11 +63,10 @@ contract FHE {
         FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_UINT256_NAMESPACE | FHE_ADDRESS_MULTIPLY_NAMESPACE | 0x02;
 
     uint256 public constant ENCRYPT_UINT256_ADDRESS =
-        FHE_ADDRESS_NAMESPACE | FHE_NETWORK_API_NAMESPACE | FHE_ADDRESS_UINT256_NAMESPACE | FHE_ENCRYPT_ADDRESS ;
+        FHE_ADDRESS_NAMESPACE | FHE_NETWORK_API_NAMESPACE | FHE_ADDRESS_UINT256_NAMESPACE | FHE_ENCRYPT_ADDRESS;
 
     uint256 public constant REENCRYPT_UINT256_ADDRESS =
-        FHE_ADDRESS_NAMESPACE | FHE_NETWORK_API_NAMESPACE | FHE_ADDRESS_UINT256_NAMESPACE | FHE_REENCRYPT_ADDRESS ;
-
+        FHE_ADDRESS_NAMESPACE | FHE_NETWORK_API_NAMESPACE | FHE_ADDRESS_UINT256_NAMESPACE | FHE_REENCRYPT_ADDRESS;
 
     // uint64
     uint256 public constant ADD_CIPHERUINT64CIPHERUINT64_ADDRESS =
@@ -93,11 +91,10 @@ contract FHE {
         FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_UINT64_NAMESPACE | FHE_ADDRESS_MULTIPLY_NAMESPACE | 0x02;
 
     uint256 public constant ENCRYPT_UINT64_ADDRESS =
-        FHE_ADDRESS_NAMESPACE | FHE_NETWORK_API_NAMESPACE | FHE_ADDRESS_UINT64_NAMESPACE | FHE_ENCRYPT_ADDRESS ;
+        FHE_ADDRESS_NAMESPACE | FHE_NETWORK_API_NAMESPACE | FHE_ADDRESS_UINT64_NAMESPACE | FHE_ENCRYPT_ADDRESS;
 
     uint256 public constant REENCRYPT_UINT64_ADDRESS =
-        FHE_ADDRESS_NAMESPACE | FHE_NETWORK_API_NAMESPACE | FHE_ADDRESS_UINT64_NAMESPACE | FHE_REENCRYPT_ADDRESS ;
-
+        FHE_ADDRESS_NAMESPACE | FHE_NETWORK_API_NAMESPACE | FHE_ADDRESS_UINT64_NAMESPACE | FHE_REENCRYPT_ADDRESS;
 
     // int64
     uint256 public constant ADD_CIPHERINT64CIPHERINT64_ADDRESS =
@@ -122,10 +119,10 @@ contract FHE {
         FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_INT64_NAMESPACE | FHE_ADDRESS_MULTIPLY_NAMESPACE | 0x02;
 
     uint256 public constant ENCRYPT_INT64_ADDRESS =
-        FHE_ADDRESS_NAMESPACE | FHE_NETWORK_API_NAMESPACE | FHE_ADDRESS_INT64_NAMESPACE | FHE_ENCRYPT_ADDRESS ;
+        FHE_ADDRESS_NAMESPACE | FHE_NETWORK_API_NAMESPACE | FHE_ADDRESS_INT64_NAMESPACE | FHE_ENCRYPT_ADDRESS;
 
     uint256 public constant REENCRYPT_INT64_ADDRESS =
-        FHE_ADDRESS_NAMESPACE | FHE_NETWORK_API_NAMESPACE | FHE_ADDRESS_INT64_NAMESPACE | FHE_REENCRYPT_ADDRESS ;
+        FHE_ADDRESS_NAMESPACE | FHE_NETWORK_API_NAMESPACE | FHE_ADDRESS_INT64_NAMESPACE | FHE_REENCRYPT_ADDRESS;
 
     // frac64
     uint256 public constant ADD_CIPHERFRAC64CIPHERFRAC64_ADDRESS =
@@ -150,11 +147,10 @@ contract FHE {
         FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_FRAC64_NAMESPACE | FHE_ADDRESS_MULTIPLY_NAMESPACE | 0x02;
 
     uint256 public constant ENCRYPT_FRAC64_ADDRESS =
-        FHE_ADDRESS_NAMESPACE | FHE_NETWORK_API_NAMESPACE | FHE_ADDRESS_FRAC64_NAMESPACE | FHE_ENCRYPT_ADDRESS ;
+        FHE_ADDRESS_NAMESPACE | FHE_NETWORK_API_NAMESPACE | FHE_ADDRESS_FRAC64_NAMESPACE | FHE_ENCRYPT_ADDRESS;
 
     uint256 public constant REENCRYPT_FRAC64_ADDRESS =
-        FHE_ADDRESS_NAMESPACE | FHE_NETWORK_API_NAMESPACE | FHE_ADDRESS_FRAC64_NAMESPACE | FHE_REENCRYPT_ADDRESS ;
-
+        FHE_ADDRESS_NAMESPACE | FHE_NETWORK_API_NAMESPACE | FHE_ADDRESS_FRAC64_NAMESPACE | FHE_REENCRYPT_ADDRESS;
 
     /**
      *
@@ -246,11 +242,7 @@ contract FHE {
     /// Pack values for encryption function call.
     /// @param plaintextValue Plaintext value to the binary operator.
     /// @param data Bytes to append to the message
-    function packUint256Bytes(uint256 plaintextValue, bytes memory data)
-        internal
-        pure
-        returns (bytes memory)
-    {
+    function packUint256Bytes(uint256 plaintextValue, bytes memory data) internal pure returns (bytes memory) {
         bytes memory input;
         uint256 offsetLength = 4; // 1 u32s
         uint256 offset_1 = 32 + offsetLength;
@@ -321,11 +313,7 @@ contract FHE {
     /// Pack values for encryption function call.
     /// @param plaintextValue Plaintext value to the binary operator.
     /// @param data Bytes to append to the message
-    function packUint64Bytes(uint64 plaintextValue, bytes memory data)
-        internal
-        pure
-        returns (bytes memory)
-    {
+    function packUint64Bytes(uint64 plaintextValue, bytes memory data) internal pure returns (bytes memory) {
         bytes memory input;
         uint256 offsetLength = 4; // 1 u32s
         uint256 offset_1 = 8 + offsetLength;
@@ -396,11 +384,7 @@ contract FHE {
     /// Pack values for encryption function call.
     /// @param plaintextValue Plaintext value to the binary operator.
     /// @param data Bytes to append to the message
-    function packInt64Bytes(int64 plaintextValue, bytes memory data)
-        internal
-        pure
-        returns (bytes memory)
-    {
+    function packInt64Bytes(int64 plaintextValue, bytes memory data) internal pure returns (bytes memory) {
         bytes memory input;
         uint256 offsetLength = 4; // 1 u32s
         uint256 offset_1 = 8 + offsetLength;
@@ -472,11 +456,7 @@ contract FHE {
     /// Pack values for encryption function call.
     /// @param plaintextValue Plaintext value to the binary operator.
     /// @param data Bytes to append to the message
-    function packFrac64Bytes(bytes8 plaintextValue, bytes memory data)
-        internal
-        pure
-        returns (bytes memory)
-    {
+    function packFrac64Bytes(bytes8 plaintextValue, bytes memory data) internal pure returns (bytes memory) {
         bytes memory input;
         uint256 offsetLength = 4; // 1 u32s
         uint256 offset_1 = 8 + offsetLength;
@@ -849,12 +829,7 @@ contract FHE {
     /// @dev This costs 1000 gas
     /// @param plaintextValue Plaintext value to multiply to a ciphertext
     /// @return result The encrypted `plaintextValue`
-    function encryptUint256(uint256 plaintextValue)
-        public
-        view
-        returns (bytes memory)
-    {
-
+    function encryptUint256(uint256 plaintextValue) public view returns (bytes memory) {
         bytes memory msg_sender = uint256(uint160(msg.sender)).toBytes(32);
         bytes memory block_number = block.number.toBytes(32);
 
@@ -869,11 +844,7 @@ contract FHE {
     /// @param pubk Bincode encoded `Sunscreen::PublicKey`
     /// @param encryptedValue Bincode encoded `Sunscreen::Cipher<bfv::Unsigned256>`.
     /// @return result The reencrypted `encryptedValue` under the provided key.
-    function reencryptUint256(bytes memory pubk, bytes memory encryptedValue)
-        public
-        view
-        returns (bytes memory)
-    {
+    function reencryptUint256(bytes memory pubk, bytes memory encryptedValue) public view returns (bytes memory) {
         bytes memory msg_sender = uint256(uint160(msg.sender)).toBytes(32);
         bytes memory block_number = block.number.toBytes(32);
 
@@ -885,11 +856,7 @@ contract FHE {
     /// Refresh a ciphertext (reset the noise)
     /// @param encryptedValue Bincode encoded `Sunscreen::Cipher<bfv::Unsigned256>`.
     /// @return result The refreshed `encryptedValue`.
-    function refreshUint256(bytes memory encryptedValue)
-        public
-        view
-        returns (bytes memory)
-    {
+    function refreshUint256(bytes memory encryptedValue) public view returns (bytes memory) {
         bytes memory pubk = networkPublicKey();
         return reencryptUint256(pubk, encryptedValue);
     }
@@ -1034,12 +1001,7 @@ contract FHE {
     /// @dev This costs 1000 gas
     /// @param plaintextValue Plaintext value to multiply to a ciphertext
     /// @return result The encrypted `plaintextValue`
-    function encryptUint64(uint64 plaintextValue)
-        public
-        view
-        returns (bytes memory)
-    {
-
+    function encryptUint64(uint64 plaintextValue) public view returns (bytes memory) {
         bytes memory msg_sender = uint256(uint160(msg.sender)).toBytes(32);
         bytes memory block_number = block.number.toBytes(32);
 
@@ -1054,11 +1016,7 @@ contract FHE {
     /// @param pubk Bincode encoded `Sunscreen::PublicKey`
     /// @param encryptedValue Bincode encoded `Sunscreen::Cipher<bfv::Unsigned256>`.
     /// @return result The reencrypted `encryptedValue` under the provided key.
-    function reencryptUint64(bytes memory pubk, bytes memory encryptedValue)
-        public
-        view
-        returns (bytes memory)
-    {
+    function reencryptUint64(bytes memory pubk, bytes memory encryptedValue) public view returns (bytes memory) {
         bytes memory msg_sender = uint256(uint160(msg.sender)).toBytes(32);
         bytes memory block_number = block.number.toBytes(32);
 
@@ -1070,11 +1028,7 @@ contract FHE {
     /// Refresh a ciphertext (reset the noise)
     /// @param encryptedValue Bincode encoded `Sunscreen::Cipher<bfv::Unsigned256>`.
     /// @return result The refreshed `encryptedValue`.
-    function refreshUint64(bytes memory encryptedValue)
-        public
-        view
-        returns (bytes memory)
-    {
+    function refreshUint64(bytes memory encryptedValue) public view returns (bytes memory) {
         bytes memory pubk = networkPublicKey();
         return reencryptUint64(pubk, encryptedValue);
     }
@@ -1219,12 +1173,7 @@ contract FHE {
     /// @dev This costs 1000 gas
     /// @param plaintextValue Plaintext value to multiply to a ciphertext
     /// @return result The encrypted `plaintextValue`
-    function encryptInt64(int64 plaintextValue)
-        public
-        view
-        returns (bytes memory)
-    {
-
+    function encryptInt64(int64 plaintextValue) public view returns (bytes memory) {
         bytes memory msg_sender = uint256(uint160(msg.sender)).toBytes(32);
         bytes memory block_number = block.number.toBytes(32);
 
@@ -1239,11 +1188,7 @@ contract FHE {
     /// @param pubk Bincode encoded `Sunscreen::PublicKey`
     /// @param encryptedValue Bincode encoded `Sunscreen::Cipher<bfv::Unsigned256>`.
     /// @return result The reencrypted `encryptedValue` under the provided key.
-    function reencryptInt64(bytes memory pubk, bytes memory encryptedValue)
-        public
-        view
-        returns (bytes memory)
-    {
+    function reencryptInt64(bytes memory pubk, bytes memory encryptedValue) public view returns (bytes memory) {
         bytes memory msg_sender = uint256(uint160(msg.sender)).toBytes(32);
         bytes memory block_number = block.number.toBytes(32);
 
@@ -1255,11 +1200,7 @@ contract FHE {
     /// Refresh a ciphertext (reset the noise)
     /// @param encryptedValue Bincode encoded `Sunscreen::Cipher<bfv::Unsigned256>`.
     /// @return result The refreshed `encryptedValue`.
-    function refreshInt64(bytes memory encryptedValue)
-        public
-        view
-        returns (bytes memory)
-    {
+    function refreshInt64(bytes memory encryptedValue) public view returns (bytes memory) {
         bytes memory pubk = networkPublicKey();
         return reencryptInt64(pubk, encryptedValue);
     }
@@ -1404,12 +1345,7 @@ contract FHE {
     /// @dev This costs 1000 gas
     /// @param plaintextValue Plaintext value to multiply to a ciphertext
     /// @return result The encrypted `plaintextValue`
-    function encryptFrac64(bytes8 plaintextValue)
-        public
-        view
-        returns (bytes memory)
-    {
-
+    function encryptFrac64(bytes8 plaintextValue) public view returns (bytes memory) {
         bytes memory msg_sender = uint256(uint160(msg.sender)).toBytes(32);
         bytes memory block_number = block.number.toBytes(32);
 
@@ -1424,11 +1360,7 @@ contract FHE {
     /// @param pubk Bincode encoded `Sunscreen::PublicKey`
     /// @param encryptedValue Bincode encoded `Sunscreen::Cipher<bfv::Unsigned256>`.
     /// @return result The reencrypted `encryptedValue` under the provided key.
-    function reencryptFrac64(bytes memory pubk, bytes memory encryptedValue)
-        public
-        view
-        returns (bytes memory)
-    {
+    function reencryptFrac64(bytes memory pubk, bytes memory encryptedValue) public view returns (bytes memory) {
         bytes memory msg_sender = uint256(uint160(msg.sender)).toBytes(32);
         bytes memory block_number = block.number.toBytes(32);
 
@@ -1440,11 +1372,7 @@ contract FHE {
     /// Refresh a ciphertext (reset the noise)
     /// @param encryptedValue Bincode encoded `Sunscreen::Cipher<bfv::Unsigned256>`.
     /// @return result The refreshed `encryptedValue`.
-    function refreshFrac64(bytes memory encryptedValue)
-        public
-        view
-        returns (bytes memory)
-    {
+    function refreshFrac64(bytes memory encryptedValue) public view returns (bytes memory) {
         bytes memory pubk = networkPublicKey();
         return reencryptFrac64(pubk, encryptedValue);
     }
