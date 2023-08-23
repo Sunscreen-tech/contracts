@@ -33,10 +33,12 @@ contract FHE {
 
     // Network API addresses
     uint256 public constant FHE_NETWORK_API_NAMESPACE = 0x01_00_00_00;
-    uint256 public constant FHE_ENCRYPT_ADDRESS = 0x00_00_00_00;
-    uint256 public constant FHE_REENCRYPT_ADDRESS = 0x00_00_00_10;
 
-    uint256 public constant FHE_NETWORK_PUBLIC_KEY_ADDRESS = FHE_ADDRESS_NAMESPACE | FHE_NETWORK_API_NAMESPACE;
+    uint256 public constant FHE_NETWORK_KEY_ADDRESS = 0x00_00_00_00;
+    uint256 public constant FHE_ENCRYPT_ADDRESS = 0x00_00_00_10;
+    uint256 public constant FHE_REENCRYPT_ADDRESS = 0x00_00_00_20;
+
+    uint256 public constant FHE_NETWORK_PUBLIC_KEY_ADDRESS = FHE_ADDRESS_NAMESPACE | FHE_NETWORK_API_NAMESPACE | FHE_NETWORK_KEY_ADDRESS;
 
 
     // uint256
