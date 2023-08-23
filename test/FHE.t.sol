@@ -36,6 +36,15 @@ contract FHETest is Test {
     // Still, good to have a test that valid encryptions and encodings make
     // it through without a revert.
 
+    function testNetworkPublicKey() public {
+        vm.pauseGasMetering();
+        bytes memory c_enc = fhe.networkPublicKey();
+        bytes memory c_enc_2 = fhe.refreshUint256(c_enc);
+
+        assert(c_enc_2.length > 0);
+        vm.resumeGasMetering();
+    }
+
     /**
      *
      * uint256 operations
@@ -141,6 +150,32 @@ contract FHETest is Test {
         vm.resumeGasMetering();
     }
 
+    function testEncryptUint256() public {
+        vm.pauseGasMetering();
+        bytes memory c_enc = fhe.encryptUint256(5);
+        assert(c_enc.length > 0);
+        vm.resumeGasMetering();
+    }
+
+    function testReencryptUint256() public {
+        vm.pauseGasMetering();
+        bytes memory pubk = vm.readFileBinary("test/data/public_key.pub");
+        bytes memory a_enc = fhe.encryptUint256(5);
+
+        bytes memory c_enc = fhe.reencryptUint256(pubk, a_enc);
+        assert(c_enc.length > 0);
+        vm.resumeGasMetering();
+    }
+
+    function testRefreshUint256() public {
+        vm.pauseGasMetering();
+        bytes memory c_enc = fhe.encryptUint256(5);
+        bytes memory c_enc_2 = fhe.refreshUint256(c_enc);
+
+        assert(c_enc_2.length > 0);
+        vm.resumeGasMetering();
+    }
+
     /**
      *
      * uint64 operations
@@ -243,6 +278,32 @@ contract FHETest is Test {
 
         bytes memory c_enc = fhe.multiplyUint64PlainEnc(pubk, a, b_enc);
         assert(c_enc.length > 0);
+        vm.resumeGasMetering();
+    }
+
+    function testEncryptUint64() public {
+        vm.pauseGasMetering();
+        bytes memory c_enc = fhe.encryptUint64(5);
+        assert(c_enc.length > 0);
+        vm.resumeGasMetering();
+    }
+
+    function testReencryptUint64() public {
+        vm.pauseGasMetering();
+        bytes memory pubk = vm.readFileBinary("test/data/public_key.pub");
+        bytes memory a_enc = fhe.encryptUint64(5);
+
+        bytes memory c_enc = fhe.reencryptUint64(pubk, a_enc);
+        assert(c_enc.length > 0);
+        vm.resumeGasMetering();
+    }
+
+    function testRefreshUint64() public {
+        vm.pauseGasMetering();
+        bytes memory c_enc = fhe.encryptUint64(5);
+        bytes memory c_enc_2 = fhe.refreshUint64(c_enc);
+
+        assert(c_enc_2.length > 0);
         vm.resumeGasMetering();
     }
 
@@ -352,6 +413,32 @@ contract FHETest is Test {
     //     vm.resumeGasMetering();
     // }
 
+    function testEncryptInt64() public {
+        vm.pauseGasMetering();
+        bytes memory c_enc = fhe.encryptInt64(5);
+        assert(c_enc.length > 0);
+        vm.resumeGasMetering();
+    }
+
+    function testReencryptInt64() public {
+        vm.pauseGasMetering();
+        bytes memory pubk = vm.readFileBinary("test/data/public_key.pub");
+        bytes memory a_enc = fhe.encryptInt64(5);
+
+        bytes memory c_enc = fhe.reencryptInt64(pubk, a_enc);
+        assert(c_enc.length > 0);
+        vm.resumeGasMetering();
+    }
+
+    function testRefreshInt64() public {
+        vm.pauseGasMetering();
+        bytes memory c_enc = fhe.encryptInt64(5);
+        bytes memory c_enc_2 = fhe.refreshInt64(c_enc);
+
+        assert(c_enc_2.length > 0);
+        vm.resumeGasMetering();
+    }
+
     /**
      *
      * frac64 operations
@@ -454,6 +541,32 @@ contract FHETest is Test {
 
         bytes memory c_enc = fhe.multiplyFrac64PlainEnc(pubk, a, b_enc);
         assert(c_enc.length > 0);
+        vm.resumeGasMetering();
+    }
+
+    function testEncryptFrac64() public {
+        vm.pauseGasMetering();
+        bytes memory c_enc = fhe.encryptFrac64(frac64_5);
+        assert(c_enc.length > 0);
+        vm.resumeGasMetering();
+    }
+
+    function testReencryptFrac64() public {
+        vm.pauseGasMetering();
+        bytes memory pubk = vm.readFileBinary("test/data/public_key.pub");
+        bytes memory a_enc = fhe.encryptFrac64(frac64_5);
+
+        bytes memory c_enc = fhe.reencryptFrac64(pubk, a_enc);
+        assert(c_enc.length > 0);
+        vm.resumeGasMetering();
+    }
+
+    function testRefreshFrac64() public {
+        vm.pauseGasMetering();
+        bytes memory c_enc = fhe.encryptFrac64(frac64_5);
+        bytes memory c_enc_2 = fhe.refreshFrac64(c_enc);
+
+        assert(c_enc_2.length > 0);
         vm.resumeGasMetering();
     }
 }
