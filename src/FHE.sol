@@ -15,105 +15,144 @@ contract FHE {
     uint256 public constant SUBTRACT_PLAIN_GAS = ADD_GAS;
     uint256 public constant MULTIPLY_GAS = 1000;
     uint256 public constant MULTIPLY_PLAIN_GAS = ADD_PLAIN_GAS;
+    uint256 public constant ENCRYPT_GAS = 1000;
+    uint256 public constant REENCRYPT_GAS = 2000;
+    uint256 public constant NETWORK_PUBLIC_KEY_GAS = 0;
+
 
     // Precompile addresses
     uint256 public constant FHE_ADDRESS_NAMESPACE = 0xf0_00_00_00;
-    uint256 public constant FHE_ADDRESS_UINT256NAMESPACE = 0x00_00_00_00;
-    uint256 public constant FHE_ADDRESS_UINT64NAMESPACE = 0x00_00_01_00;
-    uint256 public constant FHE_ADDRESS_INT64NAMESPACE = 0x00_00_02_00;
-    uint256 public constant FHE_ADDRESS_FRAC64NAMESPACE = 0x00_00_03_00;
+    uint256 public constant FHE_ADDRESS_UINT256_NAMESPACE = 0x00_00_00_00;
+    uint256 public constant FHE_ADDRESS_UINT64_NAMESPACE = 0x00_00_01_00;
+    uint256 public constant FHE_ADDRESS_INT64_NAMESPACE = 0x00_00_02_00;
+    uint256 public constant FHE_ADDRESS_FRAC64_NAMESPACE = 0x00_00_03_00;
 
     uint256 public constant FHE_ADDRESS_ADD_NAMESPACE = 0x00_00_00_00;
     uint256 public constant FHE_ADDRESS_SUBTRACT_NAMESPACE = 0x00_00_00_10;
     uint256 public constant FHE_ADDRESS_MULTIPLY_NAMESPACE = 0x00_00_00_20;
 
+    // Network API addresses
+    uint256 public constant FHE_NETWORK_API_NAMESPACE = 0x01_00_00_00;
+    uint256 public constant FHE_ENCRYPT_ADDRESS = 0x00_00_00_00;
+    uint256 public constant FHE_REENCRYPT_ADDRESS = 0x00_00_00_10;
+
+    uint256 public constant FHE_NETWORK_PUBLIC_KEY_ADDRESS = FHE_ADDRESS_NAMESPACE | FHE_NETWORK_API_NAMESPACE;
+
+
     // uint256
     uint256 public constant ADD_CIPHERUINT256CIPHERUINT256_ADDRESS =
-        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_UINT256NAMESPACE | FHE_ADDRESS_ADD_NAMESPACE | 0x00;
+        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_UINT256_NAMESPACE | FHE_ADDRESS_ADD_NAMESPACE | 0x00;
     uint256 public constant ADD_CIPHERUINT256UINT256_ADDRESS =
-        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_UINT256NAMESPACE | FHE_ADDRESS_ADD_NAMESPACE | 0x01;
+        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_UINT256_NAMESPACE | FHE_ADDRESS_ADD_NAMESPACE | 0x01;
     uint256 public constant ADD_UINT256CIPHERUINT256_ADDRESS =
-        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_UINT256NAMESPACE | FHE_ADDRESS_ADD_NAMESPACE | 0x02;
+        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_UINT256_NAMESPACE | FHE_ADDRESS_ADD_NAMESPACE | 0x02;
 
     uint256 public constant SUBTRACT_CIPHERUINT256CIPHERUINT256_ADDRESS =
-        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_UINT256NAMESPACE | FHE_ADDRESS_SUBTRACT_NAMESPACE | 0x00;
+        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_UINT256_NAMESPACE | FHE_ADDRESS_SUBTRACT_NAMESPACE | 0x00;
     uint256 public constant SUBTRACT_CIPHERUINT256UINT256_ADDRESS =
-        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_UINT256NAMESPACE | FHE_ADDRESS_SUBTRACT_NAMESPACE | 0x01;
+        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_UINT256_NAMESPACE | FHE_ADDRESS_SUBTRACT_NAMESPACE | 0x01;
     uint256 public constant SUBTRACT_UINT256CIPHERUINT256_ADDRESS =
-        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_UINT256NAMESPACE | FHE_ADDRESS_SUBTRACT_NAMESPACE | 0x02;
+        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_UINT256_NAMESPACE | FHE_ADDRESS_SUBTRACT_NAMESPACE | 0x02;
 
     uint256 public constant MULTIPLY_CIPHERUINT256CIPHERUINT256_ADDRESS =
-        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_UINT256NAMESPACE | FHE_ADDRESS_MULTIPLY_NAMESPACE | 0x00;
+        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_UINT256_NAMESPACE | FHE_ADDRESS_MULTIPLY_NAMESPACE | 0x00;
     uint256 public constant MULTIPLY_CIPHERUINT256UINT256_ADDRESS =
-        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_UINT256NAMESPACE | FHE_ADDRESS_MULTIPLY_NAMESPACE | 0x01;
+        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_UINT256_NAMESPACE | FHE_ADDRESS_MULTIPLY_NAMESPACE | 0x01;
     uint256 public constant MULTIPLY_UINT256CIPHERUINT256_ADDRESS =
-        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_UINT256NAMESPACE | FHE_ADDRESS_MULTIPLY_NAMESPACE | 0x02;
+        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_UINT256_NAMESPACE | FHE_ADDRESS_MULTIPLY_NAMESPACE | 0x02;
+
+    uint256 public constant ENCRYPT_UINT256_ADDRESS =
+        FHE_ADDRESS_NAMESPACE | FHE_NETWORK_API_NAMESPACE | FHE_ADDRESS_UINT256_NAMESPACE | FHE_ENCRYPT_ADDRESS ;
+
+    uint256 public constant REENCRYPT_UINT256_ADDRESS =
+        FHE_ADDRESS_NAMESPACE | FHE_NETWORK_API_NAMESPACE | FHE_ADDRESS_UINT256_NAMESPACE | FHE_REENCRYPT_ADDRESS ;
+
 
     // uint64
     uint256 public constant ADD_CIPHERUINT64CIPHERUINT64_ADDRESS =
-        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_UINT64NAMESPACE | FHE_ADDRESS_ADD_NAMESPACE | 0x00;
+        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_UINT64_NAMESPACE | FHE_ADDRESS_ADD_NAMESPACE | 0x00;
     uint256 public constant ADD_CIPHERUINT64UINT64_ADDRESS =
-        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_UINT64NAMESPACE | FHE_ADDRESS_ADD_NAMESPACE | 0x01;
+        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_UINT64_NAMESPACE | FHE_ADDRESS_ADD_NAMESPACE | 0x01;
     uint256 public constant ADD_UINT64CIPHERUINT64_ADDRESS =
-        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_UINT64NAMESPACE | FHE_ADDRESS_ADD_NAMESPACE | 0x02;
+        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_UINT64_NAMESPACE | FHE_ADDRESS_ADD_NAMESPACE | 0x02;
 
     uint256 public constant SUBTRACT_CIPHERUINT64CIPHERUINT64_ADDRESS =
-        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_UINT64NAMESPACE | FHE_ADDRESS_SUBTRACT_NAMESPACE | 0x00;
+        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_UINT64_NAMESPACE | FHE_ADDRESS_SUBTRACT_NAMESPACE | 0x00;
     uint256 public constant SUBTRACT_CIPHERUINT64UINT64_ADDRESS =
-        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_UINT64NAMESPACE | FHE_ADDRESS_SUBTRACT_NAMESPACE | 0x01;
+        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_UINT64_NAMESPACE | FHE_ADDRESS_SUBTRACT_NAMESPACE | 0x01;
     uint256 public constant SUBTRACT_UINT64CIPHERUINT64_ADDRESS =
-        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_UINT64NAMESPACE | FHE_ADDRESS_SUBTRACT_NAMESPACE | 0x02;
+        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_UINT64_NAMESPACE | FHE_ADDRESS_SUBTRACT_NAMESPACE | 0x02;
 
     uint256 public constant MULTIPLY_CIPHERUINT64CIPHERUINT64_ADDRESS =
-        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_UINT64NAMESPACE | FHE_ADDRESS_MULTIPLY_NAMESPACE | 0x00;
+        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_UINT64_NAMESPACE | FHE_ADDRESS_MULTIPLY_NAMESPACE | 0x00;
     uint256 public constant MULTIPLY_CIPHERUINT64UINT64_ADDRESS =
-        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_UINT64NAMESPACE | FHE_ADDRESS_MULTIPLY_NAMESPACE | 0x01;
+        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_UINT64_NAMESPACE | FHE_ADDRESS_MULTIPLY_NAMESPACE | 0x01;
     uint256 public constant MULTIPLY_UINT64CIPHERUINT64_ADDRESS =
-        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_UINT64NAMESPACE | FHE_ADDRESS_MULTIPLY_NAMESPACE | 0x02;
+        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_UINT64_NAMESPACE | FHE_ADDRESS_MULTIPLY_NAMESPACE | 0x02;
+
+    uint256 public constant ENCRYPT_UINT64_ADDRESS =
+        FHE_ADDRESS_NAMESPACE | FHE_NETWORK_API_NAMESPACE | FHE_ADDRESS_UINT64_NAMESPACE | FHE_ENCRYPT_ADDRESS ;
+
+    uint256 public constant REENCRYPT_UINT64_ADDRESS =
+        FHE_ADDRESS_NAMESPACE | FHE_NETWORK_API_NAMESPACE | FHE_ADDRESS_UINT64_NAMESPACE | FHE_REENCRYPT_ADDRESS ;
+
 
     // int64
     uint256 public constant ADD_CIPHERINT64CIPHERINT64_ADDRESS =
-        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_INT64NAMESPACE | FHE_ADDRESS_ADD_NAMESPACE | 0x00;
+        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_INT64_NAMESPACE | FHE_ADDRESS_ADD_NAMESPACE | 0x00;
     uint256 public constant ADD_CIPHERINT64INT64_ADDRESS =
-        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_INT64NAMESPACE | FHE_ADDRESS_ADD_NAMESPACE | 0x01;
+        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_INT64_NAMESPACE | FHE_ADDRESS_ADD_NAMESPACE | 0x01;
     uint256 public constant ADD_INT64CIPHERINT64_ADDRESS =
-        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_INT64NAMESPACE | FHE_ADDRESS_ADD_NAMESPACE | 0x02;
+        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_INT64_NAMESPACE | FHE_ADDRESS_ADD_NAMESPACE | 0x02;
 
     uint256 public constant SUBTRACT_CIPHERINT64CIPHERINT64_ADDRESS =
-        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_INT64NAMESPACE | FHE_ADDRESS_SUBTRACT_NAMESPACE | 0x00;
+        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_INT64_NAMESPACE | FHE_ADDRESS_SUBTRACT_NAMESPACE | 0x00;
     uint256 public constant SUBTRACT_CIPHERINT64INT64_ADDRESS =
-        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_INT64NAMESPACE | FHE_ADDRESS_SUBTRACT_NAMESPACE | 0x01;
+        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_INT64_NAMESPACE | FHE_ADDRESS_SUBTRACT_NAMESPACE | 0x01;
     uint256 public constant SUBTRACT_INT64CIPHERINT64_ADDRESS =
-        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_INT64NAMESPACE | FHE_ADDRESS_SUBTRACT_NAMESPACE | 0x02;
+        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_INT64_NAMESPACE | FHE_ADDRESS_SUBTRACT_NAMESPACE | 0x02;
 
     uint256 public constant MULTIPLY_CIPHERINT64CIPHERINT64_ADDRESS =
-        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_INT64NAMESPACE | FHE_ADDRESS_MULTIPLY_NAMESPACE | 0x00;
+        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_INT64_NAMESPACE | FHE_ADDRESS_MULTIPLY_NAMESPACE | 0x00;
     uint256 public constant MULTIPLY_CIPHERINT64INT64_ADDRESS =
-        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_INT64NAMESPACE | FHE_ADDRESS_MULTIPLY_NAMESPACE | 0x01;
+        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_INT64_NAMESPACE | FHE_ADDRESS_MULTIPLY_NAMESPACE | 0x01;
     uint256 public constant MULTIPLY_INT64CIPHERINT64_ADDRESS =
-        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_INT64NAMESPACE | FHE_ADDRESS_MULTIPLY_NAMESPACE | 0x02;
+        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_INT64_NAMESPACE | FHE_ADDRESS_MULTIPLY_NAMESPACE | 0x02;
+
+    uint256 public constant ENCRYPT_INT64_ADDRESS =
+        FHE_ADDRESS_NAMESPACE | FHE_NETWORK_API_NAMESPACE | FHE_ADDRESS_INT64_NAMESPACE | FHE_ENCRYPT_ADDRESS ;
+
+    uint256 public constant REENCRYPT_INT64_ADDRESS =
+        FHE_ADDRESS_NAMESPACE | FHE_NETWORK_API_NAMESPACE | FHE_ADDRESS_INT64_NAMESPACE | FHE_REENCRYPT_ADDRESS ;
 
     // frac64
     uint256 public constant ADD_CIPHERFRAC64CIPHERFRAC64_ADDRESS =
-        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_FRAC64NAMESPACE | FHE_ADDRESS_ADD_NAMESPACE | 0x00;
+        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_FRAC64_NAMESPACE | FHE_ADDRESS_ADD_NAMESPACE | 0x00;
     uint256 public constant ADD_CIPHERFRAC64FRAC64_ADDRESS =
-        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_FRAC64NAMESPACE | FHE_ADDRESS_ADD_NAMESPACE | 0x01;
+        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_FRAC64_NAMESPACE | FHE_ADDRESS_ADD_NAMESPACE | 0x01;
     uint256 public constant ADD_FRAC64CIPHERFRAC64_ADDRESS =
-        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_FRAC64NAMESPACE | FHE_ADDRESS_ADD_NAMESPACE | 0x02;
+        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_FRAC64_NAMESPACE | FHE_ADDRESS_ADD_NAMESPACE | 0x02;
 
     uint256 public constant SUBTRACT_CIPHERFRAC64CIPHERFRAC64_ADDRESS =
-        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_FRAC64NAMESPACE | FHE_ADDRESS_SUBTRACT_NAMESPACE | 0x00;
+        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_FRAC64_NAMESPACE | FHE_ADDRESS_SUBTRACT_NAMESPACE | 0x00;
     uint256 public constant SUBTRACT_CIPHERFRAC64FRAC64_ADDRESS =
-        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_FRAC64NAMESPACE | FHE_ADDRESS_SUBTRACT_NAMESPACE | 0x01;
+        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_FRAC64_NAMESPACE | FHE_ADDRESS_SUBTRACT_NAMESPACE | 0x01;
     uint256 public constant SUBTRACT_FRAC64CIPHERFRAC64_ADDRESS =
-        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_FRAC64NAMESPACE | FHE_ADDRESS_SUBTRACT_NAMESPACE | 0x02;
+        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_FRAC64_NAMESPACE | FHE_ADDRESS_SUBTRACT_NAMESPACE | 0x02;
 
     uint256 public constant MULTIPLY_CIPHERFRAC64CIPHERFRAC64_ADDRESS =
-        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_FRAC64NAMESPACE | FHE_ADDRESS_MULTIPLY_NAMESPACE | 0x00;
+        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_FRAC64_NAMESPACE | FHE_ADDRESS_MULTIPLY_NAMESPACE | 0x00;
     uint256 public constant MULTIPLY_CIPHERFRAC64FRAC64_ADDRESS =
-        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_FRAC64NAMESPACE | FHE_ADDRESS_MULTIPLY_NAMESPACE | 0x01;
+        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_FRAC64_NAMESPACE | FHE_ADDRESS_MULTIPLY_NAMESPACE | 0x01;
     uint256 public constant MULTIPLY_FRAC64CIPHERFRAC64_ADDRESS =
-        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_FRAC64NAMESPACE | FHE_ADDRESS_MULTIPLY_NAMESPACE | 0x02;
+        FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_FRAC64_NAMESPACE | FHE_ADDRESS_MULTIPLY_NAMESPACE | 0x02;
+
+    uint256 public constant ENCRYPT_FRAC64_ADDRESS =
+        FHE_ADDRESS_NAMESPACE | FHE_NETWORK_API_NAMESPACE | FHE_ADDRESS_FRAC64_NAMESPACE | FHE_ENCRYPT_ADDRESS ;
+
+    uint256 public constant REENCRYPT_FRAC64_ADDRESS =
+        FHE_ADDRESS_NAMESPACE | FHE_NETWORK_API_NAMESPACE | FHE_ADDRESS_FRAC64_NAMESPACE | FHE_REENCRYPT_ADDRESS ;
+
 
     /**
      *
@@ -202,6 +241,27 @@ contract FHE {
         return input;
     }
 
+    /// Pack values for encryption function call.
+    /// @param plaintextValue Plaintext value to the binary operator.
+    /// @param data Bytes to append to the message
+    function packUint256Bytes(uint256 plaintextValue, bytes memory data)
+        internal
+        pure
+        returns (bytes memory)
+    {
+        bytes memory input;
+        uint256 offsetLength = 4; // 1 u32s
+        uint256 offset_1 = 32 + offsetLength;
+        require(offset_1 <= type(uint32).max, "pubk argument too large");
+
+        bytes memory byteEncodedValue = plaintextValue.toBytes();
+        bytes memory offset_1be = offset_1.toBytes(32);
+
+        input = bytes.concat(offset_1be, byteEncodedValue, data);
+
+        return input;
+    }
+
     /// Pack values for a binary operation of an encrypted uint64 value with a
     /// plaintext uint64 value, where the plaintext value is on the right.
     /// @param pubk Bincode encoded `Sunscreen::PublicKey`
@@ -252,6 +312,27 @@ contract FHE {
         bytes memory offset_2be = offset_2.toBytes(32);
 
         input = bytes.concat(offset_1be, offset_2be, pubk, byteEncodedValue, encryptedValue);
+
+        return input;
+    }
+
+    /// Pack values for encryption function call.
+    /// @param plaintextValue Plaintext value to the binary operator.
+    /// @param data Bytes to append to the message
+    function packUint64Bytes(uint64 plaintextValue, bytes memory data)
+        internal
+        pure
+        returns (bytes memory)
+    {
+        bytes memory input;
+        uint256 offsetLength = 4; // 1 u32s
+        uint256 offset_1 = 8 + offsetLength;
+        require(offset_1 <= type(uint32).max, "pubk argument too large");
+
+        bytes memory byteEncodedValue = plaintextValue.toBytes(8);
+        bytes memory offset_1be = offset_1.toBytes(32);
+
+        input = bytes.concat(offset_1be, byteEncodedValue, data);
 
         return input;
     }
@@ -310,6 +391,27 @@ contract FHE {
         return input;
     }
 
+    /// Pack values for encryption function call.
+    /// @param plaintextValue Plaintext value to the binary operator.
+    /// @param data Bytes to append to the message
+    function packInt64Bytes(int64 plaintextValue, bytes memory data)
+        internal
+        pure
+        returns (bytes memory)
+    {
+        bytes memory input;
+        uint256 offsetLength = 4; // 1 u32s
+        uint256 offset_1 = 8 + offsetLength;
+        require(offset_1 <= type(uint32).max, "pubk argument too large");
+
+        bytes memory byteEncodedValue = plaintextValue.toBytes();
+        bytes memory offset_1be = offset_1.toBytes(32);
+
+        input = bytes.concat(offset_1be, byteEncodedValue, data);
+
+        return input;
+    }
+
     /// Pack values for a binary operation of an encrypted Fractional<64> value with a
     /// plaintext Fractional<64> value, where the plaintext value is on the right.
     /// @param pubk Bincode encoded `Sunscreen::PublicKey`
@@ -361,6 +463,27 @@ contract FHE {
         bytes memory offset_2be = offset_2.toBytes(32);
 
         input = bytes.concat(offset_1be, offset_2be, pubk, byteEncodedValue, encryptedValue);
+
+        return input;
+    }
+
+    /// Pack values for encryption function call.
+    /// @param plaintextValue Plaintext value to the binary operator.
+    /// @param data Bytes to append to the message
+    function packFrac64Bytes(bytes8 plaintextValue, bytes memory data)
+        internal
+        pure
+        returns (bytes memory)
+    {
+        bytes memory input;
+        uint256 offsetLength = 4; // 1 u32s
+        uint256 offset_1 = 8 + offsetLength;
+        require(offset_1 <= type(uint32).max, "pubk argument too large");
+
+        bytes memory byteEncodedValue = plaintextValue.toBytes();
+        bytes memory offset_1be = offset_1.toBytes(32);
+
+        input = bytes.concat(offset_1be, byteEncodedValue, data);
 
         return input;
     }
@@ -720,6 +843,55 @@ contract FHE {
         );
     }
 
+    /// Encrypt a plaintext uint256 value
+    /// @dev This costs 1000 gas
+    /// @param plaintextValue Plaintext value to multiply to a ciphertext
+    /// @return result The encrypted `plaintextValue`
+    function encryptUint256(uint256 plaintextValue)
+        public
+        view
+        returns (bytes memory)
+    {
+
+        bytes memory msg_sender = uint256(uint160(msg.sender)).toBytes(32);
+        bytes memory block_number = block.number.toBytes(32);
+
+        bytes memory publicData = bytes.concat(msg_sender, block_number);
+
+        bytes memory input = packUint256Bytes(plaintextValue, publicData);
+        return callPrecompile(ENCRYPT_UINT256_ADDRESS, ENCRYPT_GAS, input);
+    }
+
+    /// Reencrypt a ciphertext from the network key to another key.
+    /// @dev This costs 2000 gas
+    /// @param pubk Bincode encoded `Sunscreen::PublicKey`
+    /// @param encryptedValue Bincode encoded `Sunscreen::Cipher<bfv::Unsigned256>`.
+    /// @return result The reencrypted `encryptedValue` under the provided key.
+    function reencryptUint256(bytes memory pubk, bytes memory encryptedValue)
+        public
+        view
+        returns (bytes memory)
+    {
+        bytes memory msg_sender = uint256(uint160(msg.sender)).toBytes(32);
+        bytes memory block_number = block.number.toBytes(32);
+
+        bytes memory publicData = bytes.concat(msg_sender, block_number);
+
+        return callEnc(REENCRYPT_UINT256_ADDRESS, REENCRYPT_GAS, pubk, encryptedValue, publicData);
+    }
+
+    /// Refresh a ciphertext (reset the noise)
+    /// @param encryptedValue Bincode encoded `Sunscreen::Cipher<bfv::Unsigned256>`.
+    /// @return result The refreshed `encryptedValue`.
+    function refreshUint256(bytes memory encryptedValue)
+        public
+        view
+        returns (bytes memory)
+    {
+        bytes memory pubk = networkPublicKey();
+        return reencryptUint256(pubk, encryptedValue);
+    }
+
     /**
      *
      * uint64 operations
@@ -854,6 +1026,55 @@ contract FHE {
         return callUint64PlainEnc(
             MULTIPLY_UINT64CIPHERUINT64_ADDRESS, MULTIPLY_PLAIN_GAS, pubk, plaintextValue, encryptedValue
         );
+    }
+
+    /// Encrypt a plaintext uint64 value
+    /// @dev This costs 1000 gas
+    /// @param plaintextValue Plaintext value to multiply to a ciphertext
+    /// @return result The encrypted `plaintextValue`
+    function encryptUint64(uint64 plaintextValue)
+        public
+        view
+        returns (bytes memory)
+    {
+
+        bytes memory msg_sender = uint256(uint160(msg.sender)).toBytes(32);
+        bytes memory block_number = block.number.toBytes(32);
+
+        bytes memory publicData = bytes.concat(msg_sender, block_number);
+
+        bytes memory input = packUint64Bytes(plaintextValue, publicData);
+        return callPrecompile(ENCRYPT_UINT64_ADDRESS, ENCRYPT_GAS, input);
+    }
+
+    /// Reencrypt a ciphertext from the network key to another key.
+    /// @dev This costs 2000 gas
+    /// @param pubk Bincode encoded `Sunscreen::PublicKey`
+    /// @param encryptedValue Bincode encoded `Sunscreen::Cipher<bfv::Unsigned256>`.
+    /// @return result The reencrypted `encryptedValue` under the provided key.
+    function reencryptUint64(bytes memory pubk, bytes memory encryptedValue)
+        public
+        view
+        returns (bytes memory)
+    {
+        bytes memory msg_sender = uint256(uint160(msg.sender)).toBytes(32);
+        bytes memory block_number = block.number.toBytes(32);
+
+        bytes memory publicData = bytes.concat(msg_sender, block_number);
+
+        return callEnc(REENCRYPT_UINT64_ADDRESS, REENCRYPT_GAS, pubk, encryptedValue, publicData);
+    }
+
+    /// Refresh a ciphertext (reset the noise)
+    /// @param encryptedValue Bincode encoded `Sunscreen::Cipher<bfv::Unsigned256>`.
+    /// @return result The refreshed `encryptedValue`.
+    function refreshUint64(bytes memory encryptedValue)
+        public
+        view
+        returns (bytes memory)
+    {
+        bytes memory pubk = networkPublicKey();
+        return reencryptUint64(pubk, encryptedValue);
     }
 
     /**
@@ -992,6 +1213,55 @@ contract FHE {
         );
     }
 
+    /// Encrypt a plaintext int64 value
+    /// @dev This costs 1000 gas
+    /// @param plaintextValue Plaintext value to multiply to a ciphertext
+    /// @return result The encrypted `plaintextValue`
+    function encryptInt64(int64 plaintextValue)
+        public
+        view
+        returns (bytes memory)
+    {
+
+        bytes memory msg_sender = uint256(uint160(msg.sender)).toBytes(32);
+        bytes memory block_number = block.number.toBytes(32);
+
+        bytes memory publicData = bytes.concat(msg_sender, block_number);
+
+        bytes memory input = packInt64Bytes(plaintextValue, publicData);
+        return callPrecompile(ENCRYPT_INT64_ADDRESS, ENCRYPT_GAS, input);
+    }
+
+    /// Reencrypt a ciphertext from the network key to another key.
+    /// @dev This costs 2000 gas
+    /// @param pubk Bincode encoded `Sunscreen::PublicKey`
+    /// @param encryptedValue Bincode encoded `Sunscreen::Cipher<bfv::Unsigned256>`.
+    /// @return result The reencrypted `encryptedValue` under the provided key.
+    function reencryptInt64(bytes memory pubk, bytes memory encryptedValue)
+        public
+        view
+        returns (bytes memory)
+    {
+        bytes memory msg_sender = uint256(uint160(msg.sender)).toBytes(32);
+        bytes memory block_number = block.number.toBytes(32);
+
+        bytes memory publicData = bytes.concat(msg_sender, block_number);
+
+        return callEnc(REENCRYPT_INT64_ADDRESS, REENCRYPT_GAS, pubk, encryptedValue, publicData);
+    }
+
+    /// Refresh a ciphertext (reset the noise)
+    /// @param encryptedValue Bincode encoded `Sunscreen::Cipher<bfv::Unsigned256>`.
+    /// @return result The refreshed `encryptedValue`.
+    function refreshInt64(bytes memory encryptedValue)
+        public
+        view
+        returns (bytes memory)
+    {
+        bytes memory pubk = networkPublicKey();
+        return reencryptInt64(pubk, encryptedValue);
+    }
+
     /**
      *
      * frac64 operations
@@ -1126,5 +1396,58 @@ contract FHE {
         return callFrac64PlainEnc(
             MULTIPLY_FRAC64CIPHERFRAC64_ADDRESS, MULTIPLY_PLAIN_GAS, pubk, plaintextValue, encryptedValue
         );
+    }
+
+    /// Encrypt a plaintext Fractional<64> value
+    /// @dev This costs 1000 gas
+    /// @param plaintextValue Plaintext value to multiply to a ciphertext
+    /// @return result The encrypted `plaintextValue`
+    function encryptFrac64(bytes8 plaintextValue)
+        public
+        view
+        returns (bytes memory)
+    {
+
+        bytes memory msg_sender = uint256(uint160(msg.sender)).toBytes(32);
+        bytes memory block_number = block.number.toBytes(32);
+
+        bytes memory publicData = bytes.concat(msg_sender, block_number);
+
+        bytes memory input = packFrac64Bytes(plaintextValue, publicData);
+        return callPrecompile(ENCRYPT_FRAC64_ADDRESS, ENCRYPT_GAS, input);
+    }
+
+    /// Reencrypt a ciphertext from the network key to another key.
+    /// @dev This costs 2000 gas
+    /// @param pubk Bincode encoded `Sunscreen::PublicKey`
+    /// @param encryptedValue Bincode encoded `Sunscreen::Cipher<bfv::Unsigned256>`.
+    /// @return result The reencrypted `encryptedValue` under the provided key.
+    function reencryptFrac64(bytes memory pubk, bytes memory encryptedValue)
+        public
+        view
+        returns (bytes memory)
+    {
+        bytes memory msg_sender = uint256(uint160(msg.sender)).toBytes(32);
+        bytes memory block_number = block.number.toBytes(32);
+
+        bytes memory publicData = bytes.concat(msg_sender, block_number);
+
+        return callEnc(REENCRYPT_FRAC64_ADDRESS, REENCRYPT_GAS, pubk, encryptedValue, publicData);
+    }
+
+    /// Refresh a ciphertext (reset the noise)
+    /// @param encryptedValue Bincode encoded `Sunscreen::Cipher<bfv::Unsigned256>`.
+    /// @return result The refreshed `encryptedValue`.
+    function refreshFrac64(bytes memory encryptedValue)
+        public
+        view
+        returns (bytes memory)
+    {
+        bytes memory pubk = networkPublicKey();
+        return reencryptFrac64(pubk, encryptedValue);
+    }
+
+    function networkPublicKey() public view returns (bytes memory) {
+        return callPrecompile(FHE_NETWORK_PUBLIC_KEY_ADDRESS, NETWORK_PUBLIC_KEY_GAS, "");
     }
 }
