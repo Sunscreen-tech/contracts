@@ -7,7 +7,7 @@ on:
   pull_request:
 
 env:
-  FOUNDRY_REV: 631e5e04bc11db2a541a265047da8819438e742d
+  FOUNDRY_REV: 1e02b444205cd87602a54ea094b80e7d4c6c462e
 
 jobs:
   test:
