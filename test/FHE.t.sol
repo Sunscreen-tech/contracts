@@ -391,27 +391,27 @@ contract FHETest is Test {
     }
 
     // Currently cause an internal SEAL error
-    // function testMultiplyInt64EncPlain() public {
-    //     vm.pauseGasMetering();
-    //     bytes memory pubk = vm.readFileBinary("test/data/public_key.pub");
-    //     bytes memory a_enc = vm.readFileBinary("test/data/a_i64.bin");
-    //     int64 b = 4;
+    function testMultiplyInt64EncPlain() public {
+        vm.pauseGasMetering();
+        bytes memory pubk = vm.readFileBinary("test/data/public_key.pub");
+        bytes memory a_enc = vm.readFileBinary("test/data/a_i64.bin");
+        int64 b = 4;
 
-    //     bytes memory c_enc = fhe.multiplyInt64EncPlain(pubk, a_enc, b);
-    //     assert(c_enc.length > 0);
-    //     vm.resumeGasMetering();
-    // }
+        bytes memory c_enc = fhe.multiplyInt64EncPlain(pubk, a_enc, b);
+        assert(c_enc.length > 0);
+        vm.resumeGasMetering();
+    }
 
-    // function testMultiplyInt64PlainEnc() public {
-    //     vm.pauseGasMetering();
-    //     bytes memory pubk = vm.readFileBinary("test/data/public_key.pub");
-    //     int64 a = 5;
-    //     bytes memory b_enc = vm.readFileBinary("test/data/b_i64.bin");
+    function testMultiplyInt64PlainEnc() public {
+        vm.pauseGasMetering();
+        bytes memory pubk = vm.readFileBinary("test/data/public_key.pub");
+        int64 a = 5;
+        bytes memory b_enc = vm.readFileBinary("test/data/b_i64.bin");
 
-    //     bytes memory c_enc = fhe.multiplyInt64PlainEnc(pubk, a, b_enc);
-    //     assert(c_enc.length > 0);
-    //     vm.resumeGasMetering();
-    // }
+        bytes memory c_enc = fhe.multiplyInt64PlainEnc(pubk, a, b_enc);
+        assert(c_enc.length > 0);
+        vm.resumeGasMetering();
+    }
 
     function testEncryptInt64() public {
         vm.pauseGasMetering();
