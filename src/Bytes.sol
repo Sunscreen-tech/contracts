@@ -24,9 +24,11 @@ library Bytes {
 
     // Converts an int64 to its 8 byte representation.
     function toBytes(int64 self) internal pure returns (bytes memory bts) {
+        int64 data = self << (256 - 64);
+
         bts = new bytes(8);
         assembly {
-            mstore(add(bts, 32), self)
+            mstore(add(bts, 32), data)
         }
     }
 
