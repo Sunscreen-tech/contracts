@@ -33,7 +33,8 @@ jobs:
           cargo install \
             --git https://github.com/Sunscreen-tech/foundry \
             --rev ${{ env.FOUNDRY_REV }} \
-            --profile local forge
+            --profile local forge \
+            --locked
 
       - name: Save new forge binary
         if: steps.cache.outputs.cache-hit != 'true'
