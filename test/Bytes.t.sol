@@ -10,8 +10,7 @@ contract FHETest is Test {
     bytes8 public constant frac64_5 = 0x40_14_00_00_00_00_00_00;
     bytes8 public constant frac64_4 = 0x40_10_00_00_00_00_00_00;
 
-    function setUp() public {
-    }
+    function setUp() public {}
 
     function testBytesToUint256() public {
         uint256 value1 = 5;
@@ -24,7 +23,6 @@ contract FHETest is Test {
         uint256 out2 = bts2.fromBytesUint256();
         assertEq(out2, value2);
     }
-
 
     function testBytesToUint64() public {
         uint64 value = 4129075;
@@ -46,5 +44,4 @@ contract FHETest is Test {
         bytes8 out = bts.fromBytesFrac64();
         assertEq(out, value);
     }
-
 }

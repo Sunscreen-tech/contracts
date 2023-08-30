@@ -73,7 +73,6 @@ contract FHE {
     uint256 public constant DECRYPT_UINT256_ADDRESS =
         FHE_ADDRESS_NAMESPACE | FHE_NETWORK_API_NAMESPACE | FHE_ADDRESS_UINT256_NAMESPACE | FHE_DECRYPT_ADDRESS;
 
-
     // uint64
     uint256 public constant ADD_CIPHERUINT64CIPHERUINT64_ADDRESS =
         FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_UINT64_NAMESPACE | FHE_ADDRESS_ADD_NAMESPACE | 0x00;
@@ -172,7 +171,6 @@ contract FHE {
      * Packing variants
      *
      */
-
 
     /// Pack values for a binary operation on two encrypted values
     /// @param pubk Bincode encoded `Sunscreen::PublicKey`
@@ -521,7 +519,7 @@ contract FHE {
                     0 // retSize
                 )
             let size := returndatasize()
-            
+
             // Get a pointer to some free space in memory. This information is
             // always located at 0x40. See
             // https://blog.trustlook.com/understand-evm-bytecode-part-4/
@@ -529,8 +527,8 @@ contract FHE {
 
             // Update the free memory pointer to point to the next free memory
             // slot.
-            mstore(0x40, add(output, add(0x20, size))) 
-            
+            mstore(0x40, add(output, add(0x20, size)))
+
             // Dynamic bytes store their size in the first 32 bytes of the data,
             // so we need to copy that over.
             mstore(output, size)

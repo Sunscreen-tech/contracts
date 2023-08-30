@@ -1,16 +1,17 @@
 pragma solidity ^0.8.19;
 
 library Bytes {
-
-    /*************************************************************************
+    /**
+     *
      * Types to bytes memory conversions
-     *************************************************************************/
+     *
+     */
 
     /**
      * Copies 'len' bytes from 'self' into a new 'bytes memory', starting at index '0'.
      * Returns the newly created 'bytes memory'
      * The returned bytes will be of length 'len'.
-     */ 
+     */
     function toBytes(bytes32 self, uint8 len) internal pure returns (bytes memory bts) {
         require(len <= 32);
         bts = new bytes(len);
@@ -22,7 +23,7 @@ library Bytes {
         }
     }
 
-    /** 
+    /**
      * Copies 'self' into a new 'bytes memory'.
      *
      * Requires that:
@@ -34,7 +35,7 @@ library Bytes {
      * @param bitsize The number of bits to copy from 'self'.
      * @return bts The bytes representation of the uint256 value. The bytes will
      *             be of length 'bitsize / 8'.
-     */ 
+     */
     function toBytes(uint256 self, uint16 bitsize) internal pure returns (bytes memory bts) {
         require(8 <= bitsize && bitsize <= 256 && bitsize % 8 == 0);
         self <<= 256 - bitsize;
@@ -43,7 +44,7 @@ library Bytes {
 
     /**
      * Copies 'self' into a new 'bytes memory'.
-     * 
+     *
      * @param self The uint256 value to convert.
      * @return bts The bytes representation of the uint256 value. The bytes will
      *             be of length 32.
@@ -72,7 +73,7 @@ library Bytes {
      * @param self The bytes8 value to convert.
      * @return bts The bytes representation of the bytes8 value. The bytes
      *             will be of length 8.
-     */ 
+     */
     function toBytes(bytes8 self) internal pure returns (bytes memory bts) {
         bts = new bytes(8);
         assembly {
@@ -80,9 +81,11 @@ library Bytes {
         }
     }
 
-    /*************************************************************************
+    /**
+     *
      * Bytes memory to types conversions
-     *************************************************************************/
+     *
+     */
 
     /**
      * Converts a bytes array to a uint256 value.

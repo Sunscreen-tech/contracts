@@ -290,7 +290,7 @@ contract FHETest is Test {
 
         assert(c_enc_2.length > 0);
         assertEq(c, value);
-        
+
         vm.resumeGasMetering();
     }
 
