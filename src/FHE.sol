@@ -544,24 +544,6 @@ contract FHE {
         return output;
     }
 
-            // let size := returndatasize()
-            // output := mload(0x40)
-            // mstore(output, 0x1F)
-            // mstore(add(output, 0x20), size)
-            // returndatacopy(add(output, 0x40), 0, size)
-            // if iszero(res) {
-            //     revert(output, add(0x20, size))
-            // }
-
-            // let size := returndatasize()
-            // let p := mload(0x40)
-            // mstore(p, 0x20)
-            // mstore(add(p, 0x20), size)
-            // returndatacopy(add(p, 0x40), 0, size)
-            // switch res
-            // case 0 { revert(p, add(0x40, size)) }
-            // default { return(p, add(0x40, size)) }
-
     /// Call a binary operation on two encrypted values
     /// @param _address The address of the precompile.
     /// @param gasCost How much gas it costs to run this precompile.
