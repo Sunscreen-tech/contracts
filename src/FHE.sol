@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.13;
+pragma solidity ^0.8.19;
 
 import "./Bytes.sol";
 
@@ -17,6 +17,7 @@ contract FHE {
     uint256 public constant MULTIPLY_PLAIN_GAS = ADD_PLAIN_GAS;
     uint256 public constant ENCRYPT_GAS = 1000;
     uint256 public constant REENCRYPT_GAS = 2000;
+    uint256 public constant DECRYPT_GAS = 1000;
     uint256 public constant NETWORK_PUBLIC_KEY_GAS = 0;
 
     // Precompile addresses
@@ -36,6 +37,7 @@ contract FHE {
     uint256 public constant FHE_NETWORK_KEY_ADDRESS = 0x00_00_00_00;
     uint256 public constant FHE_ENCRYPT_ADDRESS = 0x00_00_00_10;
     uint256 public constant FHE_REENCRYPT_ADDRESS = 0x00_00_00_20;
+    uint256 public constant FHE_DECRYPT_ADDRESS = 0x00_00_00_30;
 
     uint256 public constant FHE_NETWORK_PUBLIC_KEY_ADDRESS =
         FHE_ADDRESS_NAMESPACE | FHE_NETWORK_API_NAMESPACE | FHE_NETWORK_KEY_ADDRESS;
@@ -68,6 +70,9 @@ contract FHE {
     uint256 public constant REENCRYPT_UINT256_ADDRESS =
         FHE_ADDRESS_NAMESPACE | FHE_NETWORK_API_NAMESPACE | FHE_ADDRESS_UINT256_NAMESPACE | FHE_REENCRYPT_ADDRESS;
 
+    uint256 public constant DECRYPT_UINT256_ADDRESS =
+        FHE_ADDRESS_NAMESPACE | FHE_NETWORK_API_NAMESPACE | FHE_ADDRESS_UINT256_NAMESPACE | FHE_DECRYPT_ADDRESS;
+
     // uint64
     uint256 public constant ADD_CIPHERUINT64CIPHERUINT64_ADDRESS =
         FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_UINT64_NAMESPACE | FHE_ADDRESS_ADD_NAMESPACE | 0x00;
@@ -95,6 +100,9 @@ contract FHE {
 
     uint256 public constant REENCRYPT_UINT64_ADDRESS =
         FHE_ADDRESS_NAMESPACE | FHE_NETWORK_API_NAMESPACE | FHE_ADDRESS_UINT64_NAMESPACE | FHE_REENCRYPT_ADDRESS;
+
+    uint256 public constant DECRYPT_UINT64_ADDRESS =
+        FHE_ADDRESS_NAMESPACE | FHE_NETWORK_API_NAMESPACE | FHE_ADDRESS_UINT64_NAMESPACE | FHE_DECRYPT_ADDRESS;
 
     // int64
     uint256 public constant ADD_CIPHERINT64CIPHERINT64_ADDRESS =
@@ -124,6 +132,9 @@ contract FHE {
     uint256 public constant REENCRYPT_INT64_ADDRESS =
         FHE_ADDRESS_NAMESPACE | FHE_NETWORK_API_NAMESPACE | FHE_ADDRESS_INT64_NAMESPACE | FHE_REENCRYPT_ADDRESS;
 
+    uint256 public constant DECRYPT_INT64_ADDRESS =
+        FHE_ADDRESS_NAMESPACE | FHE_NETWORK_API_NAMESPACE | FHE_ADDRESS_INT64_NAMESPACE | FHE_DECRYPT_ADDRESS;
+
     // frac64
     uint256 public constant ADD_CIPHERFRAC64CIPHERFRAC64_ADDRESS =
         FHE_ADDRESS_NAMESPACE | FHE_ADDRESS_FRAC64_NAMESPACE | FHE_ADDRESS_ADD_NAMESPACE | 0x00;
@@ -151,6 +162,9 @@ contract FHE {
 
     uint256 public constant REENCRYPT_FRAC64_ADDRESS =
         FHE_ADDRESS_NAMESPACE | FHE_NETWORK_API_NAMESPACE | FHE_ADDRESS_FRAC64_NAMESPACE | FHE_REENCRYPT_ADDRESS;
+
+    uint256 public constant DECRYPT_FRAC64_ADDRESS =
+        FHE_ADDRESS_NAMESPACE | FHE_NETWORK_API_NAMESPACE | FHE_ADDRESS_FRAC64_NAMESPACE | FHE_DECRYPT_ADDRESS;
 
     /**
      *
@@ -319,7 +333,7 @@ contract FHE {
         uint256 offset_1 = 8 + offsetLength;
         require(offset_1 <= type(uint32).max, "pubk argument too large");
 
-        bytes memory byteEncodedValue = plaintextValue.toBytes(8);
+        bytes memory byteEncodedValue = plaintextValue.toBytes(64);
         bytes memory offset_1be = offset_1.toBytes(32);
 
         input = bytes.concat(offset_1be, byteEncodedValue, data);
@@ -485,6 +499,9 @@ contract FHE {
         view
         returns (bytes memory)
     {
+        bytes memory output;
+        bool success;
+
         assembly {
             // 32 bytes at the start of input hold its length, hence
             // 1. we add 32 to point to the start of the actual input data
@@ -492,7 +509,7 @@ contract FHE {
 
             // EVM precompile contract addresses listed here: https://www.evm.codes/precompiled?fork=merge
             // See https://www.evm.codes/#fa?fork=merge for staticcall details
-            let res :=
+            success :=
                 staticcall(
                     gasCost,
                     _address,
@@ -502,14 +519,27 @@ contract FHE {
                     0 // retSize
                 )
             let size := returndatasize()
-            let p := mload(0x40)
-            mstore(p, 0x20)
-            mstore(add(p, 0x20), size)
-            returndatacopy(add(p, 0x40), 0, size)
-            switch res
-            case 0 { revert(p, add(0x40, size)) }
-            default { return(p, add(0x40, size)) }
+
+            // Get a pointer to some free space in memory. This information is
+            // always located at 0x40. See
+            // https://blog.trustlook.com/understand-evm-bytecode-part-4/
+            output := mload(0x40) // Get the free memory pointer
+
+            // Update the free memory pointer to point to the next free memory
+            // slot.
+            mstore(0x40, add(output, add(0x20, size)))
+
+            // Dynamic bytes store their size in the first 32 bytes of the data,
+            // so we need to copy that over.
+            mstore(output, size)
+
+            // Copy the data from the return data to the output, starting at the
+            // address of the output + 32 bytes (to skip the size)
+            returndatacopy(add(output, 0x20), 0, size)
         }
+
+        require(success, "Precompile call failed");
+        return output;
     }
 
     /// Call a binary operation on two encrypted values
@@ -861,6 +891,15 @@ contract FHE {
         return reencryptUint256(pubk, encryptedValue);
     }
 
+    /// Decrypts an encrypted uint256 value.
+    ///
+    /// @param encryptedValue The encrypted value to be decrypted.
+    /// @return result The decrypted uint256 value.
+    function decryptUint256(bytes memory encryptedValue) public view returns (uint256 result) {
+        bytes memory output = callPrecompile(DECRYPT_UINT256_ADDRESS, DECRYPT_GAS, encryptedValue);
+        result = output.fromBytesUint256();
+    }
+
     /**
      *
      * uint64 operations
@@ -1031,6 +1070,15 @@ contract FHE {
     function refreshUint64(bytes memory encryptedValue) public view returns (bytes memory) {
         bytes memory pubk = networkPublicKey();
         return reencryptUint64(pubk, encryptedValue);
+    }
+
+    /// Decrypts an encrypted uint64 value.
+    ///
+    /// @param encryptedValue The encrypted value to be decrypted.
+    /// @return result The decrypted uint64 value.
+    function decryptUint64(bytes memory encryptedValue) public view returns (uint64) {
+        bytes memory output = callPrecompile(DECRYPT_UINT64_ADDRESS, DECRYPT_GAS, encryptedValue);
+        return output.fromBytesUint64();
     }
 
     /**
@@ -1205,6 +1253,15 @@ contract FHE {
         return reencryptInt64(pubk, encryptedValue);
     }
 
+    /// Decrypts an encrypted int64 value.
+    ///
+    /// @param encryptedValue The encrypted value to be decrypted.
+    /// @return result The decrypted int64 value.
+    function decryptInt64(bytes memory encryptedValue) public view returns (int64) {
+        bytes memory output = callPrecompile(DECRYPT_INT64_ADDRESS, DECRYPT_GAS, encryptedValue);
+        return output.fromBytesInt64();
+    }
+
     /**
      *
      * frac64 operations
@@ -1377,6 +1434,17 @@ contract FHE {
         return reencryptFrac64(pubk, encryptedValue);
     }
 
+    /// Decrypts an encrypted frac64 value.
+    ///
+    /// @param encryptedValue The encrypted value to be decrypted.
+    /// @return result The decrypted frac64 value.
+    function decryptFrac64(bytes memory encryptedValue) public view returns (bytes8) {
+        bytes memory output = callPrecompile(DECRYPT_FRAC64_ADDRESS, DECRYPT_GAS, encryptedValue);
+        return output.fromBytesFrac64();
+    }
+
+    /// Returns the public key of the network.
+    /// @return bytes The public key of the network.
     function networkPublicKey() public view returns (bytes memory) {
         return callPrecompile(FHE_NETWORK_PUBLIC_KEY_ADDRESS, NETWORK_PUBLIC_KEY_GAS, "");
     }

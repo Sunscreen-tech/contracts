@@ -7,7 +7,7 @@ on:
   pull_request:
 
 env:
-  FOUNDRY_REV: 1e02b444205cd87602a54ea094b80e7d4c6c462e
+  FOUNDRY_REV: c6045ce4eac63901921a8ab6a80d1583dd8e4c04
 
 jobs:
   test:
@@ -33,7 +33,8 @@ jobs:
           cargo install \
             --git https://github.com/Sunscreen-tech/foundry \
             --rev ${{ env.FOUNDRY_REV }} \
-            --profile local forge
+            --profile local forge \
+            --locked
 
       - name: Save new forge binary
         if: steps.cache.outputs.cache-hit != 'true'
