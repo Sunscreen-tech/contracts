@@ -6,18 +6,12 @@ import "forge-std/console.sol";
 import "../src/FHE.sol";
 
 contract FHETest is Test {
-    FHE public fhe;
-
     bytes8 public constant frac64_1 = 0x3F_F0_00_00_00_00_00_00;
     bytes8 public constant frac64_4 = 0x40_10_00_00_00_00_00_00;
     bytes8 public constant frac64_5 = 0x40_14_00_00_00_00_00_00;
 
     bytes8 public constant frac64_9 = 0x40_22_00_00_00_00_00_00;
     bytes8 public constant frac64_20 = 0x40_34_00_00_00_00_00_00;
-
-    function setUp() public {
-        fhe = new FHE();
-    }
 
     // Reverts (but, importantly, doesn't panic) because these are invalid
     // encodings
@@ -29,7 +23,7 @@ contract FHETest is Test {
         bytes memory xh = bytes.concat(keccak256(abi.encode(x)));
         bytes memory yh = bytes.concat(keccak256(abi.encode(y)));
 
-        fhe.addUint256EncEnc(ph, xh, yh);
+        FHE.addUint256EncEnc(ph, xh, yh);
     }
 
     // Test with pre-made ciphertext and encodings of a = 4, b = 5
@@ -43,7 +37,7 @@ contract FHETest is Test {
 
     function testNetworkPublicKey() public {
         vm.pauseGasMetering();
-        fhe.networkPublicKey();
+        FHE.networkPublicKey();
         vm.resumeGasMetering();
     }
 
@@ -59,7 +53,7 @@ contract FHETest is Test {
         bytes memory a_enc = vm.readFileBinary("test/data/a_u256.bin");
         bytes memory b_enc = vm.readFileBinary("test/data/b_u256.bin");
 
-        bytes memory c_enc = fhe.addUint256EncEnc(pubk, a_enc, b_enc);
+        bytes memory c_enc = FHE.addUint256EncEnc(pubk, a_enc, b_enc);
         assert(c_enc.length > 0);
 
         // Check that our operation returns the correct value.
@@ -67,11 +61,11 @@ contract FHETest is Test {
         uint256 b_network = 478698;
         uint256 c_network = a_network + b_network;
 
-        bytes memory a_enc_network = fhe.encryptUint256(a_network);
-        bytes memory b_enc_network = fhe.encryptUint256(b_network);
-        bytes memory c_enc_network = fhe.addUint256EncEnc(fhe.networkPublicKey(), a_enc_network, b_enc_network);
+        bytes memory a_enc_network = FHE.encryptUint256(a_network);
+        bytes memory b_enc_network = FHE.encryptUint256(b_network);
+        bytes memory c_enc_network = FHE.addUint256EncEnc(FHE.networkPublicKey(), a_enc_network, b_enc_network);
 
-        uint256 c_network_decrypted = fhe.decryptUint256(c_enc_network);
+        uint256 c_network_decrypted = FHE.decryptUint256(c_enc_network);
         assertEq(c_network, c_network_decrypted);
 
         vm.resumeGasMetering();
@@ -83,7 +77,7 @@ contract FHETest is Test {
         bytes memory a_enc = vm.readFileBinary("test/data/a_u256.bin");
         uint256 b = 4;
 
-        bytes memory c_enc = fhe.addUint256EncPlain(pubk, a_enc, b);
+        bytes memory c_enc = FHE.addUint256EncPlain(pubk, a_enc, b);
         assert(c_enc.length > 0);
 
         // Check that our operation returns the correct value.
@@ -91,10 +85,10 @@ contract FHETest is Test {
         uint256 b_network = 478698;
         uint256 c_network = a_network + b_network;
 
-        bytes memory a_enc_network = fhe.encryptUint256(a_network);
-        bytes memory c_enc_network = fhe.addUint256EncPlain(fhe.networkPublicKey(), a_enc_network, b_network);
+        bytes memory a_enc_network = FHE.encryptUint256(a_network);
+        bytes memory c_enc_network = FHE.addUint256EncPlain(FHE.networkPublicKey(), a_enc_network, b_network);
 
-        uint256 c_network_decrypted = fhe.decryptUint256(c_enc_network);
+        uint256 c_network_decrypted = FHE.decryptUint256(c_enc_network);
         assertEq(c_network, c_network_decrypted);
 
         vm.resumeGasMetering();
@@ -106,7 +100,7 @@ contract FHETest is Test {
         uint256 a = 5;
         bytes memory b_enc = vm.readFileBinary("test/data/b_u256.bin");
 
-        bytes memory c_enc = fhe.addUint256PlainEnc(pubk, a, b_enc);
+        bytes memory c_enc = FHE.addUint256PlainEnc(pubk, a, b_enc);
         assert(c_enc.length > 0);
 
         // Check that our operation returns the correct value.
@@ -114,10 +108,10 @@ contract FHETest is Test {
         uint256 b_network = 478698;
         uint256 c_network = a_network + b_network;
 
-        bytes memory b_enc_network = fhe.encryptUint256(b_network);
-        bytes memory c_enc_network = fhe.addUint256PlainEnc(fhe.networkPublicKey(), a_network, b_enc_network);
+        bytes memory b_enc_network = FHE.encryptUint256(b_network);
+        bytes memory c_enc_network = FHE.addUint256PlainEnc(FHE.networkPublicKey(), a_network, b_enc_network);
 
-        uint256 c_network_decrypted = fhe.decryptUint256(c_enc_network);
+        uint256 c_network_decrypted = FHE.decryptUint256(c_enc_network);
         assertEq(c_network, c_network_decrypted);
 
         vm.resumeGasMetering();
@@ -129,7 +123,7 @@ contract FHETest is Test {
         bytes memory a_enc = vm.readFileBinary("test/data/a_u256.bin");
         bytes memory b_enc = vm.readFileBinary("test/data/b_u256.bin");
 
-        bytes memory c_enc = fhe.subtractUint256EncEnc(pubk, a_enc, b_enc);
+        bytes memory c_enc = FHE.subtractUint256EncEnc(pubk, a_enc, b_enc);
         assert(c_enc.length > 0);
 
         // Check that our operation returns the correct value.
@@ -137,11 +131,11 @@ contract FHETest is Test {
         uint256 b_network = 478698;
         uint256 c_network = a_network - b_network;
 
-        bytes memory a_enc_network = fhe.encryptUint256(a_network);
-        bytes memory b_enc_network = fhe.encryptUint256(b_network);
-        bytes memory c_enc_network = fhe.subtractUint256EncEnc(fhe.networkPublicKey(), a_enc_network, b_enc_network);
+        bytes memory a_enc_network = FHE.encryptUint256(a_network);
+        bytes memory b_enc_network = FHE.encryptUint256(b_network);
+        bytes memory c_enc_network = FHE.subtractUint256EncEnc(FHE.networkPublicKey(), a_enc_network, b_enc_network);
 
-        uint256 c_network_decrypted = fhe.decryptUint256(c_enc_network);
+        uint256 c_network_decrypted = FHE.decryptUint256(c_enc_network);
         assertEq(c_network, c_network_decrypted);
 
         vm.resumeGasMetering();
@@ -153,7 +147,7 @@ contract FHETest is Test {
         bytes memory a_enc = vm.readFileBinary("test/data/a_u256.bin");
         uint256 b = 4;
 
-        bytes memory c_enc = fhe.subtractUint256EncPlain(pubk, a_enc, b);
+        bytes memory c_enc = FHE.subtractUint256EncPlain(pubk, a_enc, b);
         assert(c_enc.length > 0);
 
         // Check that our operation returns the correct value.
@@ -161,10 +155,10 @@ contract FHETest is Test {
         uint256 b_network = 478698;
         uint256 c_network = a_network - b_network;
 
-        bytes memory a_enc_network = fhe.encryptUint256(a_network);
-        bytes memory c_enc_network = fhe.subtractUint256EncPlain(fhe.networkPublicKey(), a_enc_network, b_network);
+        bytes memory a_enc_network = FHE.encryptUint256(a_network);
+        bytes memory c_enc_network = FHE.subtractUint256EncPlain(FHE.networkPublicKey(), a_enc_network, b_network);
 
-        uint256 c_network_decrypted = fhe.decryptUint256(c_enc_network);
+        uint256 c_network_decrypted = FHE.decryptUint256(c_enc_network);
         assertEq(c_network, c_network_decrypted);
 
         vm.resumeGasMetering();
@@ -176,7 +170,7 @@ contract FHETest is Test {
         uint256 a = 5;
         bytes memory b_enc = vm.readFileBinary("test/data/b_u256.bin");
 
-        bytes memory c_enc = fhe.subtractUint256PlainEnc(pubk, a, b_enc);
+        bytes memory c_enc = FHE.subtractUint256PlainEnc(pubk, a, b_enc);
         assert(c_enc.length > 0);
 
         // Check that our operation returns the correct value.
@@ -184,10 +178,10 @@ contract FHETest is Test {
         uint256 b_network = 478698;
         uint256 c_network = a_network - b_network;
 
-        bytes memory b_enc_network = fhe.encryptUint256(b_network);
-        bytes memory c_enc_network = fhe.subtractUint256PlainEnc(fhe.networkPublicKey(), a_network, b_enc_network);
+        bytes memory b_enc_network = FHE.encryptUint256(b_network);
+        bytes memory c_enc_network = FHE.subtractUint256PlainEnc(FHE.networkPublicKey(), a_network, b_enc_network);
 
-        uint256 c_network_decrypted = fhe.decryptUint256(c_enc_network);
+        uint256 c_network_decrypted = FHE.decryptUint256(c_enc_network);
         assertEq(c_network, c_network_decrypted);
 
         vm.resumeGasMetering();
@@ -199,7 +193,7 @@ contract FHETest is Test {
         bytes memory a_enc = vm.readFileBinary("test/data/a_u256.bin");
         bytes memory b_enc = vm.readFileBinary("test/data/b_u256.bin");
 
-        bytes memory c_enc = fhe.multiplyUint256EncEnc(pubk, a_enc, b_enc);
+        bytes memory c_enc = FHE.multiplyUint256EncEnc(pubk, a_enc, b_enc);
         assert(c_enc.length > 0);
 
         // Check that our operation returns the correct value.
@@ -207,11 +201,11 @@ contract FHETest is Test {
         uint256 b_network = 478698;
         uint256 c_network = a_network * b_network;
 
-        bytes memory a_enc_network = fhe.encryptUint256(a_network);
-        bytes memory b_enc_network = fhe.encryptUint256(b_network);
-        bytes memory c_enc_network = fhe.multiplyUint256EncEnc(fhe.networkPublicKey(), a_enc_network, b_enc_network);
+        bytes memory a_enc_network = FHE.encryptUint256(a_network);
+        bytes memory b_enc_network = FHE.encryptUint256(b_network);
+        bytes memory c_enc_network = FHE.multiplyUint256EncEnc(FHE.networkPublicKey(), a_enc_network, b_enc_network);
 
-        uint256 c_network_decrypted = fhe.decryptUint256(c_enc_network);
+        uint256 c_network_decrypted = FHE.decryptUint256(c_enc_network);
         assertEq(c_network, c_network_decrypted);
 
         vm.resumeGasMetering();
@@ -223,7 +217,7 @@ contract FHETest is Test {
         bytes memory a_enc = vm.readFileBinary("test/data/a_u256.bin");
         uint256 b = 4;
 
-        bytes memory c_enc = fhe.multiplyUint256EncPlain(pubk, a_enc, b);
+        bytes memory c_enc = FHE.multiplyUint256EncPlain(pubk, a_enc, b);
         assert(c_enc.length > 0);
 
         // Check that our operation returns the correct value.
@@ -231,10 +225,10 @@ contract FHETest is Test {
         uint256 b_network = 478698;
         uint256 c_network = a_network * b_network;
 
-        bytes memory a_enc_network = fhe.encryptUint256(a_network);
-        bytes memory c_enc_network = fhe.multiplyUint256EncPlain(fhe.networkPublicKey(), a_enc_network, b_network);
+        bytes memory a_enc_network = FHE.encryptUint256(a_network);
+        bytes memory c_enc_network = FHE.multiplyUint256EncPlain(FHE.networkPublicKey(), a_enc_network, b_network);
 
-        uint256 c_network_decrypted = fhe.decryptUint256(c_enc_network);
+        uint256 c_network_decrypted = FHE.decryptUint256(c_enc_network);
         assertEq(c_network, c_network_decrypted);
 
         vm.resumeGasMetering();
@@ -246,7 +240,7 @@ contract FHETest is Test {
         uint256 a = 5;
         bytes memory b_enc = vm.readFileBinary("test/data/b_u256.bin");
 
-        bytes memory c_enc = fhe.multiplyUint256PlainEnc(pubk, a, b_enc);
+        bytes memory c_enc = FHE.multiplyUint256PlainEnc(pubk, a, b_enc);
         assert(c_enc.length > 0);
 
         // Check that our operation returns the correct value.
@@ -254,10 +248,10 @@ contract FHETest is Test {
         uint256 b_network = 478698;
         uint256 c_network = a_network * b_network;
 
-        bytes memory b_enc_network = fhe.encryptUint256(b_network);
-        bytes memory c_enc_network = fhe.multiplyUint256PlainEnc(fhe.networkPublicKey(), a_network, b_enc_network);
+        bytes memory b_enc_network = FHE.encryptUint256(b_network);
+        bytes memory c_enc_network = FHE.multiplyUint256PlainEnc(FHE.networkPublicKey(), a_network, b_enc_network);
 
-        uint256 c_network_decrypted = fhe.decryptUint256(c_enc_network);
+        uint256 c_network_decrypted = FHE.decryptUint256(c_enc_network);
         assertEq(c_network, c_network_decrypted);
 
         vm.resumeGasMetering();
@@ -265,7 +259,7 @@ contract FHETest is Test {
 
     function testEncryptUint256() public {
         vm.pauseGasMetering();
-        bytes memory c_enc = fhe.encryptUint256(5);
+        bytes memory c_enc = FHE.encryptUint256(5);
         assert(c_enc.length > 0);
         vm.resumeGasMetering();
     }
@@ -273,9 +267,9 @@ contract FHETest is Test {
     function testReencryptUint256() public {
         vm.pauseGasMetering();
         bytes memory pubk = vm.readFileBinary("test/data/public_key.pub");
-        bytes memory a_enc = fhe.encryptUint256(5);
+        bytes memory a_enc = FHE.encryptUint256(5);
 
-        bytes memory c_enc = fhe.reencryptUint256(pubk, a_enc);
+        bytes memory c_enc = FHE.reencryptUint256(pubk, a_enc);
         assert(c_enc.length > 0);
         vm.resumeGasMetering();
     }
@@ -283,10 +277,10 @@ contract FHETest is Test {
     function testRefreshUint256() public {
         vm.pauseGasMetering();
         uint256 value = 6912345;
-        bytes memory c_enc = fhe.encryptUint256(value);
-        bytes memory c_enc_2 = fhe.refreshUint256(c_enc);
+        bytes memory c_enc = FHE.encryptUint256(value);
+        bytes memory c_enc_2 = FHE.refreshUint256(c_enc);
 
-        uint256 c = fhe.decryptUint256(c_enc_2);
+        uint256 c = FHE.decryptUint256(c_enc_2);
 
         assert(c_enc_2.length > 0);
         assertEq(c, value);
@@ -297,8 +291,8 @@ contract FHETest is Test {
     function testDecryptUint256() public {
         vm.pauseGasMetering();
         uint256 value = 745819;
-        bytes memory c_enc = fhe.encryptUint256(value);
-        uint256 c = fhe.decryptUint256(c_enc);
+        bytes memory c_enc = FHE.encryptUint256(value);
+        uint256 c = FHE.decryptUint256(c_enc);
 
         assertEq(c, value);
         vm.resumeGasMetering();
@@ -316,7 +310,7 @@ contract FHETest is Test {
         bytes memory a_enc = vm.readFileBinary("test/data/a_u64.bin");
         bytes memory b_enc = vm.readFileBinary("test/data/b_u64.bin");
 
-        bytes memory c_enc = fhe.addUint64EncEnc(pubk, a_enc, b_enc);
+        bytes memory c_enc = FHE.addUint64EncEnc(pubk, a_enc, b_enc);
         assert(c_enc.length > 0);
 
         // Check that our operation returns the correct value.
@@ -324,11 +318,11 @@ contract FHETest is Test {
         uint64 b_network = 478698;
         uint64 c_network = a_network + b_network;
 
-        bytes memory a_enc_network = fhe.encryptUint64(a_network);
-        bytes memory b_enc_network = fhe.encryptUint64(b_network);
-        bytes memory c_enc_network = fhe.addUint64EncEnc(fhe.networkPublicKey(), a_enc_network, b_enc_network);
+        bytes memory a_enc_network = FHE.encryptUint64(a_network);
+        bytes memory b_enc_network = FHE.encryptUint64(b_network);
+        bytes memory c_enc_network = FHE.addUint64EncEnc(FHE.networkPublicKey(), a_enc_network, b_enc_network);
 
-        uint64 c_network_decrypted = fhe.decryptUint64(c_enc_network);
+        uint64 c_network_decrypted = FHE.decryptUint64(c_enc_network);
         assertEq(c_network, c_network_decrypted);
 
         vm.resumeGasMetering();
@@ -340,7 +334,7 @@ contract FHETest is Test {
         bytes memory a_enc = vm.readFileBinary("test/data/a_u64.bin");
         uint64 b = 4;
 
-        bytes memory c_enc = fhe.addUint64EncPlain(pubk, a_enc, b);
+        bytes memory c_enc = FHE.addUint64EncPlain(pubk, a_enc, b);
         assert(c_enc.length > 0);
 
         // Check that our operation returns the correct value.
@@ -348,10 +342,10 @@ contract FHETest is Test {
         uint64 b_network = 478698;
         uint64 c_network = a_network + b_network;
 
-        bytes memory a_enc_network = fhe.encryptUint64(a_network);
-        bytes memory c_enc_network = fhe.addUint64EncPlain(fhe.networkPublicKey(), a_enc_network, b_network);
+        bytes memory a_enc_network = FHE.encryptUint64(a_network);
+        bytes memory c_enc_network = FHE.addUint64EncPlain(FHE.networkPublicKey(), a_enc_network, b_network);
 
-        uint64 c_network_decrypted = fhe.decryptUint64(c_enc_network);
+        uint64 c_network_decrypted = FHE.decryptUint64(c_enc_network);
         assertEq(c_network, c_network_decrypted);
 
         vm.resumeGasMetering();
@@ -363,7 +357,7 @@ contract FHETest is Test {
         uint64 a = 5;
         bytes memory b_enc = vm.readFileBinary("test/data/b_u64.bin");
 
-        bytes memory c_enc = fhe.addUint64PlainEnc(pubk, a, b_enc);
+        bytes memory c_enc = FHE.addUint64PlainEnc(pubk, a, b_enc);
         assert(c_enc.length > 0);
 
         // Check that our operation returns the correct value.
@@ -371,10 +365,10 @@ contract FHETest is Test {
         uint64 b_network = 478698;
         uint64 c_network = a_network + b_network;
 
-        bytes memory b_enc_network = fhe.encryptUint64(b_network);
-        bytes memory c_enc_network = fhe.addUint64PlainEnc(fhe.networkPublicKey(), a_network, b_enc_network);
+        bytes memory b_enc_network = FHE.encryptUint64(b_network);
+        bytes memory c_enc_network = FHE.addUint64PlainEnc(FHE.networkPublicKey(), a_network, b_enc_network);
 
-        uint64 c_network_decrypted = fhe.decryptUint64(c_enc_network);
+        uint64 c_network_decrypted = FHE.decryptUint64(c_enc_network);
         assertEq(c_network, c_network_decrypted);
 
         vm.resumeGasMetering();
@@ -386,7 +380,7 @@ contract FHETest is Test {
         bytes memory a_enc = vm.readFileBinary("test/data/a_u64.bin");
         bytes memory b_enc = vm.readFileBinary("test/data/b_u64.bin");
 
-        bytes memory c_enc = fhe.subtractUint64EncEnc(pubk, a_enc, b_enc);
+        bytes memory c_enc = FHE.subtractUint64EncEnc(pubk, a_enc, b_enc);
         assert(c_enc.length > 0);
 
         // Check that our operation returns the correct value.
@@ -394,11 +388,11 @@ contract FHETest is Test {
         uint64 b_network = 478698;
         uint64 c_network = a_network - b_network;
 
-        bytes memory a_enc_network = fhe.encryptUint64(a_network);
-        bytes memory b_enc_network = fhe.encryptUint64(b_network);
-        bytes memory c_enc_network = fhe.subtractUint64EncEnc(fhe.networkPublicKey(), a_enc_network, b_enc_network);
+        bytes memory a_enc_network = FHE.encryptUint64(a_network);
+        bytes memory b_enc_network = FHE.encryptUint64(b_network);
+        bytes memory c_enc_network = FHE.subtractUint64EncEnc(FHE.networkPublicKey(), a_enc_network, b_enc_network);
 
-        uint64 c_network_decrypted = fhe.decryptUint64(c_enc_network);
+        uint64 c_network_decrypted = FHE.decryptUint64(c_enc_network);
         assertEq(c_network, c_network_decrypted);
 
         vm.resumeGasMetering();
@@ -410,7 +404,7 @@ contract FHETest is Test {
         bytes memory a_enc = vm.readFileBinary("test/data/a_u64.bin");
         uint64 b = 4;
 
-        bytes memory c_enc = fhe.subtractUint64EncPlain(pubk, a_enc, b);
+        bytes memory c_enc = FHE.subtractUint64EncPlain(pubk, a_enc, b);
         assert(c_enc.length > 0);
 
         // Check that our operation returns the correct value.
@@ -418,10 +412,10 @@ contract FHETest is Test {
         uint64 b_network = 478698;
         uint64 c_network = a_network - b_network;
 
-        bytes memory a_enc_network = fhe.encryptUint64(a_network);
-        bytes memory c_enc_network = fhe.subtractUint64EncPlain(fhe.networkPublicKey(), a_enc_network, b_network);
+        bytes memory a_enc_network = FHE.encryptUint64(a_network);
+        bytes memory c_enc_network = FHE.subtractUint64EncPlain(FHE.networkPublicKey(), a_enc_network, b_network);
 
-        uint64 c_network_decrypted = fhe.decryptUint64(c_enc_network);
+        uint64 c_network_decrypted = FHE.decryptUint64(c_enc_network);
         assertEq(c_network, c_network_decrypted);
 
         vm.resumeGasMetering();
@@ -433,7 +427,7 @@ contract FHETest is Test {
         uint64 a = 5;
         bytes memory b_enc = vm.readFileBinary("test/data/b_u64.bin");
 
-        bytes memory c_enc = fhe.subtractUint64PlainEnc(pubk, a, b_enc);
+        bytes memory c_enc = FHE.subtractUint64PlainEnc(pubk, a, b_enc);
         assert(c_enc.length > 0);
 
         // Check that our operation returns the correct value.
@@ -441,10 +435,10 @@ contract FHETest is Test {
         uint64 b_network = 478698;
         uint64 c_network = a_network - b_network;
 
-        bytes memory b_enc_network = fhe.encryptUint64(b_network);
-        bytes memory c_enc_network = fhe.subtractUint64PlainEnc(fhe.networkPublicKey(), a_network, b_enc_network);
+        bytes memory b_enc_network = FHE.encryptUint64(b_network);
+        bytes memory c_enc_network = FHE.subtractUint64PlainEnc(FHE.networkPublicKey(), a_network, b_enc_network);
 
-        uint64 c_network_decrypted = fhe.decryptUint64(c_enc_network);
+        uint64 c_network_decrypted = FHE.decryptUint64(c_enc_network);
         assertEq(c_network, c_network_decrypted);
 
         vm.resumeGasMetering();
@@ -456,7 +450,7 @@ contract FHETest is Test {
         bytes memory a_enc = vm.readFileBinary("test/data/a_u64.bin");
         bytes memory b_enc = vm.readFileBinary("test/data/b_u64.bin");
 
-        bytes memory c_enc = fhe.multiplyUint64EncEnc(pubk, a_enc, b_enc);
+        bytes memory c_enc = FHE.multiplyUint64EncEnc(pubk, a_enc, b_enc);
         assert(c_enc.length > 0);
 
         // Check that our operation returns the correct value.
@@ -464,11 +458,11 @@ contract FHETest is Test {
         uint64 b_network = 478698;
         uint64 c_network = a_network * b_network;
 
-        bytes memory a_enc_network = fhe.encryptUint64(a_network);
-        bytes memory b_enc_network = fhe.encryptUint64(b_network);
-        bytes memory c_enc_network = fhe.multiplyUint64EncEnc(fhe.networkPublicKey(), a_enc_network, b_enc_network);
+        bytes memory a_enc_network = FHE.encryptUint64(a_network);
+        bytes memory b_enc_network = FHE.encryptUint64(b_network);
+        bytes memory c_enc_network = FHE.multiplyUint64EncEnc(FHE.networkPublicKey(), a_enc_network, b_enc_network);
 
-        uint64 c_network_decrypted = fhe.decryptUint64(c_enc_network);
+        uint64 c_network_decrypted = FHE.decryptUint64(c_enc_network);
         assertEq(c_network, c_network_decrypted);
 
         vm.resumeGasMetering();
@@ -480,7 +474,7 @@ contract FHETest is Test {
         bytes memory a_enc = vm.readFileBinary("test/data/a_u64.bin");
         uint64 b = 4;
 
-        bytes memory c_enc = fhe.multiplyUint64EncPlain(pubk, a_enc, b);
+        bytes memory c_enc = FHE.multiplyUint64EncPlain(pubk, a_enc, b);
         assert(c_enc.length > 0);
 
         // Check that our operation returns the correct value.
@@ -488,10 +482,10 @@ contract FHETest is Test {
         uint64 b_network = 478698;
         uint64 c_network = a_network * b_network;
 
-        bytes memory a_enc_network = fhe.encryptUint64(a_network);
-        bytes memory c_enc_network = fhe.multiplyUint64EncPlain(fhe.networkPublicKey(), a_enc_network, b_network);
+        bytes memory a_enc_network = FHE.encryptUint64(a_network);
+        bytes memory c_enc_network = FHE.multiplyUint64EncPlain(FHE.networkPublicKey(), a_enc_network, b_network);
 
-        uint64 c_network_decrypted = fhe.decryptUint64(c_enc_network);
+        uint64 c_network_decrypted = FHE.decryptUint64(c_enc_network);
         assertEq(c_network, c_network_decrypted);
 
         vm.resumeGasMetering();
@@ -503,7 +497,7 @@ contract FHETest is Test {
         uint64 a = 5;
         bytes memory b_enc = vm.readFileBinary("test/data/b_u64.bin");
 
-        bytes memory c_enc = fhe.multiplyUint64PlainEnc(pubk, a, b_enc);
+        bytes memory c_enc = FHE.multiplyUint64PlainEnc(pubk, a, b_enc);
         assert(c_enc.length > 0);
 
         // Check that our operation returns the correct value.
@@ -511,10 +505,10 @@ contract FHETest is Test {
         uint64 b_network = 478698;
         uint64 c_network = a_network * b_network;
 
-        bytes memory b_enc_network = fhe.encryptUint64(b_network);
-        bytes memory c_enc_network = fhe.multiplyUint64PlainEnc(fhe.networkPublicKey(), a_network, b_enc_network);
+        bytes memory b_enc_network = FHE.encryptUint64(b_network);
+        bytes memory c_enc_network = FHE.multiplyUint64PlainEnc(FHE.networkPublicKey(), a_network, b_enc_network);
 
-        uint64 c_network_decrypted = fhe.decryptUint64(c_enc_network);
+        uint64 c_network_decrypted = FHE.decryptUint64(c_enc_network);
         assertEq(c_network, c_network_decrypted);
 
         vm.resumeGasMetering();
@@ -522,7 +516,7 @@ contract FHETest is Test {
 
     function testEncryptUint64() public {
         vm.pauseGasMetering();
-        bytes memory c_enc = fhe.encryptUint64(5);
+        bytes memory c_enc = FHE.encryptUint64(5);
         assert(c_enc.length > 0);
         vm.resumeGasMetering();
     }
@@ -530,9 +524,9 @@ contract FHETest is Test {
     function testReencryptUint64() public {
         vm.pauseGasMetering();
         bytes memory pubk = vm.readFileBinary("test/data/public_key.pub");
-        bytes memory a_enc = fhe.encryptUint64(5);
+        bytes memory a_enc = FHE.encryptUint64(5);
 
-        bytes memory c_enc = fhe.reencryptUint64(pubk, a_enc);
+        bytes memory c_enc = FHE.reencryptUint64(pubk, a_enc);
         assert(c_enc.length > 0);
         vm.resumeGasMetering();
     }
@@ -540,10 +534,10 @@ contract FHETest is Test {
     function testRefreshUint64() public {
         vm.pauseGasMetering();
         uint64 value = 6912345;
-        bytes memory c_enc = fhe.encryptUint64(value);
-        bytes memory c_enc_2 = fhe.refreshUint64(c_enc);
+        bytes memory c_enc = FHE.encryptUint64(value);
+        bytes memory c_enc_2 = FHE.refreshUint64(c_enc);
 
-        uint64 c = fhe.decryptUint64(c_enc_2);
+        uint64 c = FHE.decryptUint64(c_enc_2);
 
         assert(c_enc_2.length > 0);
         assertEq(c, value);
@@ -554,8 +548,8 @@ contract FHETest is Test {
     function testDecryptUint64() public {
         vm.pauseGasMetering();
         uint64 value = 745819;
-        bytes memory c_enc = fhe.encryptUint64(value);
-        uint64 c = fhe.decryptUint64(c_enc);
+        bytes memory c_enc = FHE.encryptUint64(value);
+        uint64 c = FHE.decryptUint64(c_enc);
 
         assertEq(c, value);
         vm.resumeGasMetering();
@@ -573,7 +567,7 @@ contract FHETest is Test {
         bytes memory a_enc = vm.readFileBinary("test/data/a_i64.bin");
         bytes memory b_enc = vm.readFileBinary("test/data/b_i64.bin");
 
-        bytes memory c_enc = fhe.addInt64EncEnc(pubk, a_enc, b_enc);
+        bytes memory c_enc = FHE.addInt64EncEnc(pubk, a_enc, b_enc);
         assert(c_enc.length > 0);
 
         // Check that our operation returns the correct value.
@@ -581,11 +575,11 @@ contract FHETest is Test {
         int64 b_network = 478698;
         int64 c_network = a_network + b_network;
 
-        bytes memory a_enc_network = fhe.encryptInt64(a_network);
-        bytes memory b_enc_network = fhe.encryptInt64(b_network);
-        bytes memory c_enc_network = fhe.addInt64EncEnc(fhe.networkPublicKey(), a_enc_network, b_enc_network);
+        bytes memory a_enc_network = FHE.encryptInt64(a_network);
+        bytes memory b_enc_network = FHE.encryptInt64(b_network);
+        bytes memory c_enc_network = FHE.addInt64EncEnc(FHE.networkPublicKey(), a_enc_network, b_enc_network);
 
-        int64 c_network_decrypted = fhe.decryptInt64(c_enc_network);
+        int64 c_network_decrypted = FHE.decryptInt64(c_enc_network);
         assertEq(c_network, c_network_decrypted);
 
         vm.resumeGasMetering();
@@ -597,7 +591,7 @@ contract FHETest is Test {
         bytes memory a_enc = vm.readFileBinary("test/data/a_i64.bin");
         int64 b = 4;
 
-        bytes memory c_enc = fhe.addInt64EncPlain(pubk, a_enc, b);
+        bytes memory c_enc = FHE.addInt64EncPlain(pubk, a_enc, b);
         assert(c_enc.length > 0);
 
         // Check that our operation returns the correct value.
@@ -605,10 +599,10 @@ contract FHETest is Test {
         int64 b_network = 478698;
         int64 c_network = a_network + b_network;
 
-        bytes memory a_enc_network = fhe.encryptInt64(a_network);
-        bytes memory c_enc_network = fhe.addInt64EncPlain(fhe.networkPublicKey(), a_enc_network, b_network);
+        bytes memory a_enc_network = FHE.encryptInt64(a_network);
+        bytes memory c_enc_network = FHE.addInt64EncPlain(FHE.networkPublicKey(), a_enc_network, b_network);
 
-        int64 c_network_decrypted = fhe.decryptInt64(c_enc_network);
+        int64 c_network_decrypted = FHE.decryptInt64(c_enc_network);
         assertEq(c_network, c_network_decrypted);
 
         vm.resumeGasMetering();
@@ -620,7 +614,7 @@ contract FHETest is Test {
         int64 a = 5;
         bytes memory b_enc = vm.readFileBinary("test/data/b_i64.bin");
 
-        bytes memory c_enc = fhe.addInt64PlainEnc(pubk, a, b_enc);
+        bytes memory c_enc = FHE.addInt64PlainEnc(pubk, a, b_enc);
         assert(c_enc.length > 0);
 
         // Check that our operation returns the correct value.
@@ -628,10 +622,10 @@ contract FHETest is Test {
         int64 b_network = 478698;
         int64 c_network = a_network + b_network;
 
-        bytes memory b_enc_network = fhe.encryptInt64(b_network);
-        bytes memory c_enc_network = fhe.addInt64PlainEnc(fhe.networkPublicKey(), a_network, b_enc_network);
+        bytes memory b_enc_network = FHE.encryptInt64(b_network);
+        bytes memory c_enc_network = FHE.addInt64PlainEnc(FHE.networkPublicKey(), a_network, b_enc_network);
 
-        int64 c_network_decrypted = fhe.decryptInt64(c_enc_network);
+        int64 c_network_decrypted = FHE.decryptInt64(c_enc_network);
         assertEq(c_network, c_network_decrypted);
 
         vm.resumeGasMetering();
@@ -643,7 +637,7 @@ contract FHETest is Test {
         bytes memory a_enc = vm.readFileBinary("test/data/a_i64.bin");
         bytes memory b_enc = vm.readFileBinary("test/data/b_i64.bin");
 
-        bytes memory c_enc = fhe.subtractInt64EncEnc(pubk, a_enc, b_enc);
+        bytes memory c_enc = FHE.subtractInt64EncEnc(pubk, a_enc, b_enc);
         assert(c_enc.length > 0);
 
         // Check that our operation returns the correct value.
@@ -651,11 +645,11 @@ contract FHETest is Test {
         int64 b_network = 478698;
         int64 c_network = a_network - b_network;
 
-        bytes memory a_enc_network = fhe.encryptInt64(a_network);
-        bytes memory b_enc_network = fhe.encryptInt64(b_network);
-        bytes memory c_enc_network = fhe.subtractInt64EncEnc(fhe.networkPublicKey(), a_enc_network, b_enc_network);
+        bytes memory a_enc_network = FHE.encryptInt64(a_network);
+        bytes memory b_enc_network = FHE.encryptInt64(b_network);
+        bytes memory c_enc_network = FHE.subtractInt64EncEnc(FHE.networkPublicKey(), a_enc_network, b_enc_network);
 
-        int64 c_network_decrypted = fhe.decryptInt64(c_enc_network);
+        int64 c_network_decrypted = FHE.decryptInt64(c_enc_network);
         assertEq(c_network, c_network_decrypted);
 
         vm.resumeGasMetering();
@@ -667,7 +661,7 @@ contract FHETest is Test {
         bytes memory a_enc = vm.readFileBinary("test/data/a_i64.bin");
         int64 b = 4;
 
-        bytes memory c_enc = fhe.subtractInt64EncPlain(pubk, a_enc, b);
+        bytes memory c_enc = FHE.subtractInt64EncPlain(pubk, a_enc, b);
         assert(c_enc.length > 0);
 
         // Check that our operation returns the correct value.
@@ -675,10 +669,10 @@ contract FHETest is Test {
         int64 b_network = 478698;
         int64 c_network = a_network - b_network;
 
-        bytes memory a_enc_network = fhe.encryptInt64(a_network);
-        bytes memory c_enc_network = fhe.subtractInt64EncPlain(fhe.networkPublicKey(), a_enc_network, b_network);
+        bytes memory a_enc_network = FHE.encryptInt64(a_network);
+        bytes memory c_enc_network = FHE.subtractInt64EncPlain(FHE.networkPublicKey(), a_enc_network, b_network);
 
-        int64 c_network_decrypted = fhe.decryptInt64(c_enc_network);
+        int64 c_network_decrypted = FHE.decryptInt64(c_enc_network);
         assertEq(c_network, c_network_decrypted);
 
         vm.resumeGasMetering();
@@ -690,7 +684,7 @@ contract FHETest is Test {
         int64 a = 5;
         bytes memory b_enc = vm.readFileBinary("test/data/b_i64.bin");
 
-        bytes memory c_enc = fhe.subtractInt64PlainEnc(pubk, a, b_enc);
+        bytes memory c_enc = FHE.subtractInt64PlainEnc(pubk, a, b_enc);
         assert(c_enc.length > 0);
 
         // Check that our operation returns the correct value.
@@ -698,10 +692,10 @@ contract FHETest is Test {
         int64 b_network = 478698;
         int64 c_network = a_network - b_network;
 
-        bytes memory b_enc_network = fhe.encryptInt64(b_network);
-        bytes memory c_enc_network = fhe.subtractInt64PlainEnc(fhe.networkPublicKey(), a_network, b_enc_network);
+        bytes memory b_enc_network = FHE.encryptInt64(b_network);
+        bytes memory c_enc_network = FHE.subtractInt64PlainEnc(FHE.networkPublicKey(), a_network, b_enc_network);
 
-        int64 c_network_decrypted = fhe.decryptInt64(c_enc_network);
+        int64 c_network_decrypted = FHE.decryptInt64(c_enc_network);
         assertEq(c_network, c_network_decrypted);
 
         vm.resumeGasMetering();
@@ -713,7 +707,7 @@ contract FHETest is Test {
         bytes memory a_enc = vm.readFileBinary("test/data/a_i64.bin");
         bytes memory b_enc = vm.readFileBinary("test/data/b_i64.bin");
 
-        bytes memory c_enc = fhe.multiplyInt64EncEnc(pubk, a_enc, b_enc);
+        bytes memory c_enc = FHE.multiplyInt64EncEnc(pubk, a_enc, b_enc);
         assert(c_enc.length > 0);
 
         // Check that our operation returns the correct value.
@@ -721,11 +715,11 @@ contract FHETest is Test {
         int64 b_network = 478698;
         int64 c_network = a_network * b_network;
 
-        bytes memory a_enc_network = fhe.encryptInt64(a_network);
-        bytes memory b_enc_network = fhe.encryptInt64(b_network);
-        bytes memory c_enc_network = fhe.multiplyInt64EncEnc(fhe.networkPublicKey(), a_enc_network, b_enc_network);
+        bytes memory a_enc_network = FHE.encryptInt64(a_network);
+        bytes memory b_enc_network = FHE.encryptInt64(b_network);
+        bytes memory c_enc_network = FHE.multiplyInt64EncEnc(FHE.networkPublicKey(), a_enc_network, b_enc_network);
 
-        int64 c_network_decrypted = fhe.decryptInt64(c_enc_network);
+        int64 c_network_decrypted = FHE.decryptInt64(c_enc_network);
         assertEq(c_network, c_network_decrypted);
 
         vm.resumeGasMetering();
@@ -738,7 +732,7 @@ contract FHETest is Test {
         bytes memory a_enc = vm.readFileBinary("test/data/a_i64.bin");
         int64 b = 4;
 
-        bytes memory c_enc = fhe.multiplyInt64EncPlain(pubk, a_enc, b);
+        bytes memory c_enc = FHE.multiplyInt64EncPlain(pubk, a_enc, b);
         assert(c_enc.length > 0);
 
         // Check that our operation returns the correct value.
@@ -746,10 +740,10 @@ contract FHETest is Test {
         int64 b_network = 478698;
         int64 c_network = a_network * b_network;
 
-        bytes memory a_enc_network = fhe.encryptInt64(a_network);
-        bytes memory c_enc_network = fhe.multiplyInt64EncPlain(fhe.networkPublicKey(), a_enc_network, b_network);
+        bytes memory a_enc_network = FHE.encryptInt64(a_network);
+        bytes memory c_enc_network = FHE.multiplyInt64EncPlain(FHE.networkPublicKey(), a_enc_network, b_network);
 
-        int64 c_network_decrypted = fhe.decryptInt64(c_enc_network);
+        int64 c_network_decrypted = FHE.decryptInt64(c_enc_network);
         assertEq(c_network, c_network_decrypted);
 
         vm.resumeGasMetering();
@@ -761,7 +755,7 @@ contract FHETest is Test {
         int64 a = 5;
         bytes memory b_enc = vm.readFileBinary("test/data/b_i64.bin");
 
-        bytes memory c_enc = fhe.multiplyInt64PlainEnc(pubk, a, b_enc);
+        bytes memory c_enc = FHE.multiplyInt64PlainEnc(pubk, a, b_enc);
         assert(c_enc.length > 0);
 
         // Check that our operation returns the correct value.
@@ -769,10 +763,10 @@ contract FHETest is Test {
         int64 b_network = 478698;
         int64 c_network = a_network * b_network;
 
-        bytes memory b_enc_network = fhe.encryptInt64(b_network);
-        bytes memory c_enc_network = fhe.multiplyInt64PlainEnc(fhe.networkPublicKey(), a_network, b_enc_network);
+        bytes memory b_enc_network = FHE.encryptInt64(b_network);
+        bytes memory c_enc_network = FHE.multiplyInt64PlainEnc(FHE.networkPublicKey(), a_network, b_enc_network);
 
-        int64 c_network_decrypted = fhe.decryptInt64(c_enc_network);
+        int64 c_network_decrypted = FHE.decryptInt64(c_enc_network);
         assertEq(c_network, c_network_decrypted);
 
         vm.resumeGasMetering();
@@ -780,7 +774,7 @@ contract FHETest is Test {
 
     function testEncryptInt64() public {
         vm.pauseGasMetering();
-        bytes memory c_enc = fhe.encryptInt64(5);
+        bytes memory c_enc = FHE.encryptInt64(5);
         assert(c_enc.length > 0);
         vm.resumeGasMetering();
     }
@@ -788,9 +782,9 @@ contract FHETest is Test {
     function testReencryptInt64() public {
         vm.pauseGasMetering();
         bytes memory pubk = vm.readFileBinary("test/data/public_key.pub");
-        bytes memory a_enc = fhe.encryptInt64(5);
+        bytes memory a_enc = FHE.encryptInt64(5);
 
-        bytes memory c_enc = fhe.reencryptInt64(pubk, a_enc);
+        bytes memory c_enc = FHE.reencryptInt64(pubk, a_enc);
         assert(c_enc.length > 0);
         vm.resumeGasMetering();
     }
@@ -798,10 +792,10 @@ contract FHETest is Test {
     function testRefreshInt64() public {
         vm.pauseGasMetering();
         int64 value = -6912345;
-        bytes memory c_enc = fhe.encryptInt64(value);
-        bytes memory c_enc_2 = fhe.refreshInt64(c_enc);
+        bytes memory c_enc = FHE.encryptInt64(value);
+        bytes memory c_enc_2 = FHE.refreshInt64(c_enc);
 
-        int64 c = fhe.decryptInt64(c_enc_2);
+        int64 c = FHE.decryptInt64(c_enc_2);
 
         assert(c_enc_2.length > 0);
         assertEq(c, value);
@@ -812,8 +806,8 @@ contract FHETest is Test {
     function testDecryptInt64() public {
         vm.pauseGasMetering();
         int64 value = 745819;
-        bytes memory c_enc = fhe.encryptInt64(value);
-        int64 c = fhe.decryptInt64(c_enc);
+        bytes memory c_enc = FHE.encryptInt64(value);
+        int64 c = FHE.decryptInt64(c_enc);
 
         assertEq(c, value);
         vm.resumeGasMetering();
@@ -831,7 +825,7 @@ contract FHETest is Test {
         bytes memory a_enc = vm.readFileBinary("test/data/a_frac64.bin");
         bytes memory b_enc = vm.readFileBinary("test/data/b_frac64.bin");
 
-        bytes memory c_enc = fhe.addFrac64EncEnc(pubk, a_enc, b_enc);
+        bytes memory c_enc = FHE.addFrac64EncEnc(pubk, a_enc, b_enc);
         assert(c_enc.length > 0);
 
         // Check that our operation returns the correct value.
@@ -839,11 +833,11 @@ contract FHETest is Test {
         bytes8 b_network = frac64_4;
         bytes8 c_network = frac64_9;
 
-        bytes memory a_enc_network = fhe.encryptFrac64(a_network);
-        bytes memory b_enc_network = fhe.encryptFrac64(b_network);
-        bytes memory c_enc_network = fhe.addFrac64EncEnc(fhe.networkPublicKey(), a_enc_network, b_enc_network);
+        bytes memory a_enc_network = FHE.encryptFrac64(a_network);
+        bytes memory b_enc_network = FHE.encryptFrac64(b_network);
+        bytes memory c_enc_network = FHE.addFrac64EncEnc(FHE.networkPublicKey(), a_enc_network, b_enc_network);
 
-        bytes8 c_network_decrypted = fhe.decryptFrac64(c_enc_network);
+        bytes8 c_network_decrypted = FHE.decryptFrac64(c_enc_network);
         assertEq(c_network, c_network_decrypted);
 
         vm.resumeGasMetering();
@@ -855,7 +849,7 @@ contract FHETest is Test {
         bytes memory a_enc = vm.readFileBinary("test/data/a_frac64.bin");
         bytes8 b = frac64_4;
 
-        bytes memory c_enc = fhe.addFrac64EncPlain(pubk, a_enc, b);
+        bytes memory c_enc = FHE.addFrac64EncPlain(pubk, a_enc, b);
         assert(c_enc.length > 0);
 
         // Check that our operation returns the correct value.
@@ -863,10 +857,10 @@ contract FHETest is Test {
         bytes8 b_network = frac64_4;
         bytes8 c_network = frac64_9;
 
-        bytes memory a_enc_network = fhe.encryptFrac64(a_network);
-        bytes memory c_enc_network = fhe.addFrac64EncPlain(fhe.networkPublicKey(), a_enc_network, b_network);
+        bytes memory a_enc_network = FHE.encryptFrac64(a_network);
+        bytes memory c_enc_network = FHE.addFrac64EncPlain(FHE.networkPublicKey(), a_enc_network, b_network);
 
-        bytes8 c_network_decrypted = fhe.decryptFrac64(c_enc_network);
+        bytes8 c_network_decrypted = FHE.decryptFrac64(c_enc_network);
         assertEq(c_network, c_network_decrypted);
 
         vm.resumeGasMetering();
@@ -878,7 +872,7 @@ contract FHETest is Test {
         bytes8 a = frac64_5;
         bytes memory b_enc = vm.readFileBinary("test/data/b_frac64.bin");
 
-        bytes memory c_enc = fhe.addFrac64PlainEnc(pubk, a, b_enc);
+        bytes memory c_enc = FHE.addFrac64PlainEnc(pubk, a, b_enc);
         assert(c_enc.length > 0);
 
         // Check that our operation returns the correct value.
@@ -886,10 +880,10 @@ contract FHETest is Test {
         bytes8 b_network = frac64_4;
         bytes8 c_network = frac64_9;
 
-        bytes memory b_enc_network = fhe.encryptFrac64(b_network);
-        bytes memory c_enc_network = fhe.addFrac64PlainEnc(fhe.networkPublicKey(), a_network, b_enc_network);
+        bytes memory b_enc_network = FHE.encryptFrac64(b_network);
+        bytes memory c_enc_network = FHE.addFrac64PlainEnc(FHE.networkPublicKey(), a_network, b_enc_network);
 
-        bytes8 c_network_decrypted = fhe.decryptFrac64(c_enc_network);
+        bytes8 c_network_decrypted = FHE.decryptFrac64(c_enc_network);
         assertEq(c_network, c_network_decrypted);
 
         vm.resumeGasMetering();
@@ -901,7 +895,7 @@ contract FHETest is Test {
         bytes memory a_enc = vm.readFileBinary("test/data/a_frac64.bin");
         bytes memory b_enc = vm.readFileBinary("test/data/b_frac64.bin");
 
-        bytes memory c_enc = fhe.subtractFrac64EncEnc(pubk, a_enc, b_enc);
+        bytes memory c_enc = FHE.subtractFrac64EncEnc(pubk, a_enc, b_enc);
         assert(c_enc.length > 0);
 
         // Check that our operation returns the correct value.
@@ -909,11 +903,11 @@ contract FHETest is Test {
         bytes8 b_network = frac64_4;
         bytes8 c_network = frac64_1;
 
-        bytes memory a_enc_network = fhe.encryptFrac64(a_network);
-        bytes memory b_enc_network = fhe.encryptFrac64(b_network);
-        bytes memory c_enc_network = fhe.subtractFrac64EncEnc(fhe.networkPublicKey(), a_enc_network, b_enc_network);
+        bytes memory a_enc_network = FHE.encryptFrac64(a_network);
+        bytes memory b_enc_network = FHE.encryptFrac64(b_network);
+        bytes memory c_enc_network = FHE.subtractFrac64EncEnc(FHE.networkPublicKey(), a_enc_network, b_enc_network);
 
-        bytes8 c_network_decrypted = fhe.decryptFrac64(c_enc_network);
+        bytes8 c_network_decrypted = FHE.decryptFrac64(c_enc_network);
         assertEq(c_network, c_network_decrypted);
 
         vm.resumeGasMetering();
@@ -925,7 +919,7 @@ contract FHETest is Test {
         bytes memory a_enc = vm.readFileBinary("test/data/a_frac64.bin");
         bytes8 b = frac64_4;
 
-        bytes memory c_enc = fhe.subtractFrac64EncPlain(pubk, a_enc, b);
+        bytes memory c_enc = FHE.subtractFrac64EncPlain(pubk, a_enc, b);
         assert(c_enc.length > 0);
 
         // Check that our operation returns the correct value.
@@ -933,10 +927,10 @@ contract FHETest is Test {
         bytes8 b_network = frac64_4;
         bytes8 c_network = frac64_1;
 
-        bytes memory a_enc_network = fhe.encryptFrac64(a_network);
-        bytes memory c_enc_network = fhe.subtractFrac64EncPlain(fhe.networkPublicKey(), a_enc_network, b_network);
+        bytes memory a_enc_network = FHE.encryptFrac64(a_network);
+        bytes memory c_enc_network = FHE.subtractFrac64EncPlain(FHE.networkPublicKey(), a_enc_network, b_network);
 
-        bytes8 c_network_decrypted = fhe.decryptFrac64(c_enc_network);
+        bytes8 c_network_decrypted = FHE.decryptFrac64(c_enc_network);
         assertEq(c_network, c_network_decrypted);
 
         vm.resumeGasMetering();
@@ -948,7 +942,7 @@ contract FHETest is Test {
         bytes8 a = frac64_5;
         bytes memory b_enc = vm.readFileBinary("test/data/b_frac64.bin");
 
-        bytes memory c_enc = fhe.subtractFrac64PlainEnc(pubk, a, b_enc);
+        bytes memory c_enc = FHE.subtractFrac64PlainEnc(pubk, a, b_enc);
         assert(c_enc.length > 0);
 
         // Check that our operation returns the correct value.
@@ -956,10 +950,10 @@ contract FHETest is Test {
         bytes8 b_network = frac64_4;
         bytes8 c_network = frac64_1;
 
-        bytes memory b_enc_network = fhe.encryptFrac64(b_network);
-        bytes memory c_enc_network = fhe.subtractFrac64PlainEnc(fhe.networkPublicKey(), a_network, b_enc_network);
+        bytes memory b_enc_network = FHE.encryptFrac64(b_network);
+        bytes memory c_enc_network = FHE.subtractFrac64PlainEnc(FHE.networkPublicKey(), a_network, b_enc_network);
 
-        bytes8 c_network_decrypted = fhe.decryptFrac64(c_enc_network);
+        bytes8 c_network_decrypted = FHE.decryptFrac64(c_enc_network);
         assertEq(c_network, c_network_decrypted);
 
         vm.resumeGasMetering();
@@ -971,7 +965,7 @@ contract FHETest is Test {
         bytes memory a_enc = vm.readFileBinary("test/data/a_frac64.bin");
         bytes memory b_enc = vm.readFileBinary("test/data/b_frac64.bin");
 
-        bytes memory c_enc = fhe.multiplyFrac64EncEnc(pubk, a_enc, b_enc);
+        bytes memory c_enc = FHE.multiplyFrac64EncEnc(pubk, a_enc, b_enc);
         assert(c_enc.length > 0);
 
         // Check that our operation returns the correct value.
@@ -979,11 +973,11 @@ contract FHETest is Test {
         bytes8 b_network = frac64_4;
         bytes8 c_network = frac64_20;
 
-        bytes memory a_enc_network = fhe.encryptFrac64(a_network);
-        bytes memory b_enc_network = fhe.encryptFrac64(b_network);
-        bytes memory c_enc_network = fhe.multiplyFrac64EncEnc(fhe.networkPublicKey(), a_enc_network, b_enc_network);
+        bytes memory a_enc_network = FHE.encryptFrac64(a_network);
+        bytes memory b_enc_network = FHE.encryptFrac64(b_network);
+        bytes memory c_enc_network = FHE.multiplyFrac64EncEnc(FHE.networkPublicKey(), a_enc_network, b_enc_network);
 
-        bytes8 c_network_decrypted = fhe.decryptFrac64(c_enc_network);
+        bytes8 c_network_decrypted = FHE.decryptFrac64(c_enc_network);
         assertEq(c_network, c_network_decrypted);
 
         vm.resumeGasMetering();
@@ -995,7 +989,7 @@ contract FHETest is Test {
         bytes memory a_enc = vm.readFileBinary("test/data/a_frac64.bin");
         bytes8 b = frac64_4;
 
-        bytes memory c_enc = fhe.multiplyFrac64EncPlain(pubk, a_enc, b);
+        bytes memory c_enc = FHE.multiplyFrac64EncPlain(pubk, a_enc, b);
         assert(c_enc.length > 0);
 
         // Check that our operation returns the correct value.
@@ -1003,10 +997,10 @@ contract FHETest is Test {
         bytes8 b_network = frac64_4;
         bytes8 c_network = frac64_20;
 
-        bytes memory a_enc_network = fhe.encryptFrac64(a_network);
-        bytes memory c_enc_network = fhe.multiplyFrac64EncPlain(fhe.networkPublicKey(), a_enc_network, b_network);
+        bytes memory a_enc_network = FHE.encryptFrac64(a_network);
+        bytes memory c_enc_network = FHE.multiplyFrac64EncPlain(FHE.networkPublicKey(), a_enc_network, b_network);
 
-        bytes8 c_network_decrypted = fhe.decryptFrac64(c_enc_network);
+        bytes8 c_network_decrypted = FHE.decryptFrac64(c_enc_network);
         assertEq(c_network, c_network_decrypted);
 
         vm.resumeGasMetering();
@@ -1018,7 +1012,7 @@ contract FHETest is Test {
         bytes8 a = frac64_5;
         bytes memory b_enc = vm.readFileBinary("test/data/b_frac64.bin");
 
-        bytes memory c_enc = fhe.multiplyFrac64PlainEnc(pubk, a, b_enc);
+        bytes memory c_enc = FHE.multiplyFrac64PlainEnc(pubk, a, b_enc);
         assert(c_enc.length > 0);
 
         // Check that our operation returns the correct value.
@@ -1026,10 +1020,10 @@ contract FHETest is Test {
         bytes8 b_network = frac64_4;
         bytes8 c_network = frac64_20;
 
-        bytes memory b_enc_network = fhe.encryptFrac64(b_network);
-        bytes memory c_enc_network = fhe.multiplyFrac64PlainEnc(fhe.networkPublicKey(), a_network, b_enc_network);
+        bytes memory b_enc_network = FHE.encryptFrac64(b_network);
+        bytes memory c_enc_network = FHE.multiplyFrac64PlainEnc(FHE.networkPublicKey(), a_network, b_enc_network);
 
-        bytes8 c_network_decrypted = fhe.decryptFrac64(c_enc_network);
+        bytes8 c_network_decrypted = FHE.decryptFrac64(c_enc_network);
         assertEq(c_network, c_network_decrypted);
 
         vm.resumeGasMetering();
@@ -1037,7 +1031,7 @@ contract FHETest is Test {
 
     function testEncryptFrac64() public {
         vm.pauseGasMetering();
-        bytes memory c_enc = fhe.encryptFrac64(frac64_5);
+        bytes memory c_enc = FHE.encryptFrac64(frac64_5);
         assert(c_enc.length > 0);
         vm.resumeGasMetering();
     }
@@ -1045,9 +1039,9 @@ contract FHETest is Test {
     function testReencryptFrac64() public {
         vm.pauseGasMetering();
         bytes memory pubk = vm.readFileBinary("test/data/public_key.pub");
-        bytes memory a_enc = fhe.encryptFrac64(frac64_5);
+        bytes memory a_enc = FHE.encryptFrac64(frac64_5);
 
-        bytes memory c_enc = fhe.reencryptFrac64(pubk, a_enc);
+        bytes memory c_enc = FHE.reencryptFrac64(pubk, a_enc);
         assert(c_enc.length > 0);
         vm.resumeGasMetering();
     }
@@ -1055,10 +1049,10 @@ contract FHETest is Test {
     function testRefreshFrac64() public {
         vm.pauseGasMetering();
         bytes8 value = frac64_20;
-        bytes memory c_enc = fhe.encryptFrac64(value);
-        bytes memory c_enc_2 = fhe.refreshFrac64(c_enc);
+        bytes memory c_enc = FHE.encryptFrac64(value);
+        bytes memory c_enc_2 = FHE.refreshFrac64(c_enc);
 
-        bytes8 c = fhe.decryptFrac64(c_enc_2);
+        bytes8 c = FHE.decryptFrac64(c_enc_2);
 
         assert(c_enc_2.length > 0);
         assertEq(c, value);
@@ -1069,8 +1063,8 @@ contract FHETest is Test {
     function testDecryptFrac64() public {
         vm.pauseGasMetering();
         bytes8 value = frac64_5;
-        bytes memory c_enc = fhe.encryptFrac64(value);
-        bytes8 c = fhe.decryptFrac64(c_enc);
+        bytes memory c_enc = FHE.encryptFrac64(value);
+        bytes8 c = FHE.decryptFrac64(c_enc);
 
         assertEq(c, value);
         vm.resumeGasMetering();
