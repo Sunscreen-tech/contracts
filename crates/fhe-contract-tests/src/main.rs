@@ -18,7 +18,7 @@ use ethers::{
 };
 use eyre::{eyre, Result};
 use fhe_precompiles::pack::{pack_one_argument, unpack_one_argument};
-use fhe_precompiles::testnet::one::FHE;
+use fhe_precompiles::testnet::one::FHE as PARASOL_FHE;
 use futures::future::join_all;
 use sunscreen_web3::{
     testing::{Node, ALICE, ANVIL_MNEMONIC},
@@ -316,40 +316,33 @@ async fn test(endpoint: &str, address: Address) -> Result<()> {
  ****************************************************************************/
 
 async fn test_network_public_key(fhe: FheContract) -> Result<()> {
-    let pub_key = fhe.network_public_key().gas(GAS_PRICE).call().await?;
+    let geth_pub_key = fhe
+        .network_public_key()
+        .gas(GAS_PRICE)
+        .call()
+        .await?
+        .to_vec();
+    let fhe_pub_key = PARASOL_FHE.public_key_bytes(&[]).unwrap();
 
-    let len_pubk = pub_key.len();
-    let len_fhe = FHE.public_key_bytes(&[]).unwrap().len();
+    let len_geth_pubk = geth_pub_key.len();
+    let len_fhe_pubk = fhe_pub_key.len();
 
-    println!("public key length: {}", len_pubk);
-    println!("fhe public key length: {}", len_fhe);
-
-    println!("pub_key: {:?}", &pub_key[0..16]);
-    println!(
-        "fhe pub_key: {:?}",
-        &FHE.public_key_bytes(&[]).unwrap()[0..16]
-    );
-
-    println!("pub_key: {:?}", &pub_key[(len_pubk - 12)..(len_pubk)]);
-    println!(
-        "fhe pub_key: {:?}",
-        &FHE.public_key_bytes(&[]).unwrap()[(len_fhe - 12)..(len_fhe)]
-    );
+    println!("public key length: {}", len_geth_pubk);
+    println!("fhe public key length: {}", len_fhe_pubk);
 
     let mut print = true;
     let mut total_mismatch = 0;
-    for (k, (a, b)) in pub_key
-        .iter()
-        .zip(FHE.public_key_bytes(&[]).unwrap().iter())
-        .enumerate()
-    {
+    for (k, (a, b)) in geth_pub_key.iter().zip(fhe_pub_key.iter()).enumerate() {
         if a != b {
             if print {
                 println!("{}: {:?} {:?}", k, a, b);
-                println!("pub_key: {:?}", &pub_key[(k - 12)..(k + 12)]);
                 println!(
-                    "fhe pub_key: {:?}",
-                    &FHE.public_key_bytes(&[]).unwrap()[(k - 12)..(k + 12)]
+                    "geth_pub_key: {:?}",
+                    &geth_pub_key[(k.saturating_sub(12))..(k + 12)]
+                );
+                println!(
+                    "fhe_pub_key: {:?}",
+                    &fhe_pub_key[(k.saturating_sub(12))..(k + 12)]
                 );
                 print = false;
             }
@@ -359,7 +352,13 @@ async fn test_network_public_key(fhe: FheContract) -> Result<()> {
 
     println!("total mismatch: {}", total_mismatch);
 
-    if FHE.public_key_bytes(&[]).unwrap() != pub_key {
+    let key_deserialized = serde_json::from_slice::<sunscreen::PublicKey>(&geth_pub_key);
+    println!("successful geth deserialize: {}", key_deserialized.is_ok());
+
+    let key_deserialized = serde_json::from_slice::<sunscreen::PublicKey>(&fhe_pub_key);
+    println!("successful fhe deserialize: {}", key_deserialized.is_ok());
+
+    if fhe_pub_key != geth_pub_key {
         return Err(eyre!("Public key mismatch"));
     }
 
