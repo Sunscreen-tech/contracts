@@ -59,7 +59,7 @@ const GAS_PRICE_DEPLOY: u32 = GAS_PRICE;
 /// test_names_and_results!(named_results, fhe, test1, test2);
 /// for (name, result) in named_results {
 ///    if let Err(e) = result {
-///       println!("{name}: error: {:?}", e);
+///      println!("{name}: error: {:?}", e);
 ///    } else {
 ///      println!("{name}: ok");
 ///    }
@@ -245,53 +245,54 @@ async fn test(endpoint: &str, address: Address) -> Result<()> {
         named_results,
         fhe,
         test_network_public_key,
-        test_add_uint_256_enc_enc // test_add_uint_256_enc_plain,
-                                  // test_add_uint_256_plain_enc,
-                                  // test_subtract_uint_256_enc_enc,
-                                  // test_subtract_uint_256_enc_plain,
-                                  // test_subtract_uint_256_plain_enc,
-                                  // test_multiply_uint_256_enc_enc,
-                                  // test_multiply_uint_256_enc_plain,
-                                  // test_multiply_uint_256_plain_enc,
-                                  // test_encrypt_decrypt_uint_256,
-                                  // test_reencrypt_uint_256,
-                                  // test_refresh_uint_256,
-                                  // test_add_uint_64_enc_enc,
-                                  // test_add_uint_64_enc_plain,
-                                  // test_add_uint_64_plain_enc,
-                                  // test_subtract_uint_64_enc_enc,
-                                  // test_subtract_uint_64_enc_plain,
-                                  // test_subtract_uint_64_plain_enc,
-                                  // test_multiply_uint_64_enc_enc,
-                                  // test_multiply_uint_64_enc_plain,
-                                  // test_multiply_uint_64_plain_enc,
-                                  // test_encrypt_decrypt_uint_64,
-                                  // test_reencrypt_uint_64,
-                                  // test_refresh_uint_64,
-                                  // test_add_int_64_enc_enc,
-                                  // test_add_int_64_enc_plain,
-                                  // test_add_int_64_plain_enc,
-                                  // test_subtract_int_64_enc_enc,
-                                  // test_subtract_int_64_enc_plain,
-                                  // test_subtract_int_64_plain_enc,
-                                  // test_multiply_int_64_enc_enc,
-                                  // test_multiply_int_64_enc_plain,
-                                  // test_multiply_int_64_plain_enc,
-                                  // test_encrypt_decrypt_int_64,
-                                  // test_reencrypt_int_64,
-                                  // test_refresh_int_64,
-                                  // test_add_frac_64_enc_enc,
-                                  // test_add_frac_64_enc_plain,
-                                  // test_add_frac_64_plain_enc,
-                                  // test_subtract_frac_64_enc_enc,
-                                  // test_subtract_frac_64_enc_plain,
-                                  // test_subtract_frac_64_plain_enc,
-                                  // test_multiply_frac_64_enc_enc,
-                                  // test_multiply_frac_64_enc_plain,
-                                  // test_multiply_frac_64_plain_enc,
-                                  // test_encrypt_decrypt_frac_64,
-                                  // test_reencrypt_frac_64,
-                                  // test_refresh_frac_64
+        test_add_uint_256_enc_enc,
+        test_add_uint_256_enc_plain,
+        test_add_uint_256_plain_enc,
+        test_subtract_uint_256_enc_enc,
+        test_subtract_uint_256_enc_plain,
+        test_subtract_uint_256_plain_enc,
+        test_multiply_uint_256_enc_enc,
+        test_multiply_uint_256_enc_plain,
+        test_multiply_uint_256_plain_enc,
+        test_encrypt_decrypt_uint_256,
+        test_reencrypt_uint_256,
+        test_refresh_uint_256,
+        test_add_uint_64_enc_enc,
+        test_add_uint_64_enc_plain,
+        test_add_uint_64_plain_enc,
+        test_subtract_uint_64_enc_enc,
+        test_subtract_uint_64_enc_plain,
+        test_subtract_uint_64_plain_enc,
+        test_multiply_uint_64_enc_enc,
+        test_multiply_uint_64_enc_plain,
+        test_multiply_uint_64_plain_enc,
+        test_encrypt_decrypt_uint_64,
+        test_reencrypt_uint_64,
+        test_refresh_uint_64,
+        test_add_int_64_enc_enc,
+        test_add_int_64_enc_plain,
+        test_add_int_64_plain_enc,
+        test_subtract_int_64_enc_enc,
+        test_subtract_int_64_enc_plain,
+        test_subtract_int_64_plain_enc,
+        test_multiply_int_64_enc_enc,
+        test_multiply_int_64_enc_plain,
+        test_multiply_int_64_plain_enc,
+        test_encrypt_decrypt_int_64,
+        test_reencrypt_int_64,
+        test_refresh_int_64,
+        test_add_frac_64_enc_enc,
+        test_add_frac_64_enc_plain,
+        test_add_frac_64_plain_enc,
+        test_subtract_frac_64_enc_enc,
+        test_subtract_frac_64_enc_plain,
+        test_subtract_frac_64_plain_enc,
+        test_multiply_frac_64_enc_enc,
+        test_multiply_frac_64_enc_plain,
+        test_multiply_frac_64_plain_enc,
+        test_encrypt_decrypt_frac_64,
+        test_reencrypt_frac_64,
+        test_refresh_frac_64
     );
 
     let mut success = true;
@@ -317,49 +318,9 @@ async fn test(endpoint: &str, address: Address) -> Result<()> {
 
 async fn test_network_public_key(fhe: FheContract) -> Result<()> {
     let pub_key = fhe.network_public_key().gas(GAS_PRICE).call().await?;
+    let fhe_bytes = FHE.public_key_bytes(&[]).unwrap();
 
-    let len_pubk = pub_key.len();
-    let len_fhe = FHE.public_key_bytes(&[]).unwrap().len();
-
-    println!("public key length: {}", len_pubk);
-    println!("fhe public key length: {}", len_fhe);
-
-    println!("pub_key: {:?}", &pub_key[0..16]);
-    println!(
-        "fhe pub_key: {:?}",
-        &FHE.public_key_bytes(&[]).unwrap()[0..16]
-    );
-
-    println!("pub_key: {:?}", &pub_key[(len_pubk - 12)..(len_pubk)]);
-    println!(
-        "fhe pub_key: {:?}",
-        &FHE.public_key_bytes(&[]).unwrap()[(len_fhe - 12)..(len_fhe)]
-    );
-
-    let mut print = true;
-    let mut total_mismatch = 0;
-    for (k, (a, b)) in pub_key
-        .iter()
-        .zip(FHE.public_key_bytes(&[]).unwrap().iter())
-        .enumerate()
-    {
-        if a != b {
-            if print {
-                println!("{}: {:?} {:?}", k, a, b);
-                println!("pub_key: {:?}", &pub_key[(k - 12)..(k + 12)]);
-                println!(
-                    "fhe pub_key: {:?}",
-                    &FHE.public_key_bytes(&[]).unwrap()[(k - 12)..(k + 12)]
-                );
-                print = false;
-            }
-            total_mismatch += 1;
-        }
-    }
-
-    println!("total mismatch: {}", total_mismatch);
-
-    if FHE.public_key_bytes(&[]).unwrap() != pub_key {
+    if fhe_bytes != pub_key {
         return Err(eyre!("Public key mismatch"));
     }
 
@@ -376,20 +337,20 @@ async fn test_add_uint_256_enc_enc(fhe: FheContract) -> Result<()> {
     let a_enc = fhe.encrypt_uint_256(a).gas(GAS_PRICE).call().await?;
     let b_enc = fhe.encrypt_uint_256(b).gas(GAS_PRICE).call().await?;
 
-    // let c_enc = fhe
-    //     .add_uint_256_enc_enc(
-    //         fhe.network_public_key().gas(GAS_PRICE).call().await?,
-    //         a_enc,
-    //         b_enc,
-    //     )
-    //     .gas(GAS_PRICE)
-    //     .call()
-    //     .await?;
-    // let c_dec = fhe.decrypt_uint_256(c_enc).gas(GAS_PRICE).call().await?;
+    let c_enc = fhe
+        .add_uint_256_enc_enc(
+            fhe.network_public_key().gas(GAS_PRICE).call().await?,
+            a_enc,
+            b_enc,
+        )
+        .gas(GAS_PRICE)
+        .call()
+        .await?;
+    let c_dec = fhe.decrypt_uint_256(c_enc).gas(GAS_PRICE).call().await?;
 
-    // if c != c_dec {
-    //     return Err(eyre!("Expected {}, got {}", c, c_dec));
-    // }
+    if c != c_dec {
+        return Err(eyre!("Expected {}, got {}", c, c_dec));
+    }
 
     Ok(())
 }

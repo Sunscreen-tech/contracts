@@ -14,12 +14,8 @@ colored = "2"
 crypto-bigint = "0.5.3"
 ethers = { version = "2.0.0", features = ["rustls", "ipc"] }
 eyre = "0.6.8"
-# fhe_precompiles = { git = "https://github.com/Sunscreen-tech/fhe_precompiles" }
-fhe_precompiles = { path = "/Users/ryan/code/fhe_precompiles" }
+fhe_precompiles = { git = "https://github.com/Sunscreen-tech/fhe_precompiles" }
 futures = "0.3.28"
-sunscreen = { path = "/Users/ryan/code/Sunscreen/sunscreen" }
-# sunscreen_web3 = { git = "https://github.com/Sunscreen-tech/sunscreen_web3" }
-sunscreen_web3 = { path = "/Users/ryan/code/sunscreen_web3" }
+sunscreen = "0.8.1"
+sunscreen_web3 = { git = "https://github.com/Sunscreen-tech/sunscreen_web3" }
 tokio = { version = "1.26.0", features = [ "macros", "signal", "rt-multi-thread" ] }
-
-# TODO: Ask Sam what this is.
