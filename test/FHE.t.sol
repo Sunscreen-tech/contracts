@@ -59,6 +59,7 @@ contract FHETest is Test {
         bytes memory a_enc = vm.readFileBinary("test/data/a_u256.bin");
         bytes memory b_enc = vm.readFileBinary("test/data/b_u256.bin");
 
+        console.log("adding encrypted under other key");
         bytes memory c_enc = fhe.addUint256EncEnc(pubk, a_enc, b_enc);
         assert(c_enc.length > 0);
 
@@ -68,10 +69,14 @@ contract FHETest is Test {
         uint256 c_network = a_network + b_network;
 
         bytes memory a_enc_network = fhe.encryptUint256(a_network);
+        console.log("encrypted a");
         bytes memory b_enc_network = fhe.encryptUint256(b_network);
+        console.log("encrypted b");
         bytes memory c_enc_network = fhe.addUint256EncEnc(fhe.networkPublicKey(), a_enc_network, b_enc_network);
+        console.log("encrypted c");
 
         uint256 c_network_decrypted = fhe.decryptUint256(c_enc_network);
+        console.log("decrupted c");
         assertEq(c_network, c_network_decrypted);
 
         vm.resumeGasMetering();
