@@ -6,7 +6,7 @@ import "./Bytes.sol";
 contract FHE {
     using Bytes for *;
 
-    constructor () {}
+    constructor() {}
 
     // Gas costs, must match what is in the EVM precompile.
     uint256 public constant ADD_GAS = 200;

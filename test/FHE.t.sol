@@ -3,7 +3,7 @@ pragma solidity ^0.8.19;
 
 import "forge-std/Test.sol";
 import "forge-std/console.sol";
-import "../src/fhe.sol";
+import "../src/FHE.sol";
 
 contract FHETest is Test {
     FHE public fhe;
@@ -18,7 +18,6 @@ contract FHETest is Test {
     function setUp() public {
         fhe = new FHE();
     }
-
 
     // Reverts (but, importantly, doesn't panic) because these are invalid
     // encodings
