@@ -63,7 +63,8 @@ jobs:
 
       - name: Run FHE contract on anvil tests
         run: |
+          cargo build --release -p fhe-contract-tests 
           cargo run --release -p fhe-contract-tests -- node &
-          sleep(10)
+          sleep 10
 
           cargo run --release -p fhe-contract-tests -- test
