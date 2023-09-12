@@ -53,3 +53,17 @@ jobs:
         run: |
           forge test
         id: test
+
+      - name: Check committed FHE contract binding
+        run: |
+          forge bind \
+            --bindings-path ./crates/fhe-contract-tests/src/bindings \
+            --module --single-file \
+            --select "^FHE\$"
+
+      - name: Run FHE contract on anvil tests
+        run: |
+          cargo run --release --manifest-path=crates/fhe-contract-tests/Cargo.toml -- node &
+          sleep(10)
+
+          cargo run --release --manifest-path=crates/fhe-contract-tests/Cargo.toml -- test
