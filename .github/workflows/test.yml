@@ -63,7 +63,7 @@ jobs:
 
       - name: Run FHE contract on anvil tests
         run: |
-          cargo run --release --manifest-path=crates/fhe-contract-tests/Cargo.toml -- node &
+          cargo run --release -p fhe-contract-tests -- node &
           sleep(10)
 
-          cargo run --release --manifest-path=crates/fhe-contract-tests/Cargo.toml -- test
+          cargo run --release -p fhe-contract-tests -- test
