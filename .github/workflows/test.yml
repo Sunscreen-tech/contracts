@@ -7,7 +7,7 @@ on:
   pull_request:
 
 env:
-  FOUNDRY_REV: c6045ce4eac63901921a8ab6a80d1583dd8e4c04
+  FOUNDRY_REV: e5443a37e755eafbf818578248108816dc8554af
 
 jobs:
   test:
@@ -20,28 +20,28 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Restore forge binary if cached
+      - name: Restore foundry binaries if cached
         uses: actions/cache/restore@v3
         id: cache
         with:
           path: ~/.cargo/bin/forge
-          key: ${{ runner.os }}-${{ env.FOUNDRY_REV }}-forge
+          key: ${{ runner.os }}-${{ env.FOUNDRY_REV }}-foundry-binaries
 
-      - name: Install forge
+      - name: Install foundry binaries
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
           cargo install \
             --git https://github.com/Sunscreen-tech/foundry \
             --rev ${{ env.FOUNDRY_REV }} \
-            --profile local forge \
+            --profile local forge anvil \
             --locked
 
-      - name: Save new forge binary
+      - name: Save new foundry binaries
         if: steps.cache.outputs.cache-hit != 'true'
         uses: actions/cache/save@v3
         with:
-          path: ~/.cargo/bin/forge
-          key: ${{ runner.os }}-${{ env.FOUNDRY_REV }}-forge
+          path: ~/.cargo/bin/
+          key: ${{ runner.os }}-${{ env.FOUNDRY_REV }}-foundry-binaries
 
       - name: Run Forge build
         run: |
@@ -53,3 +53,18 @@ jobs:
         run: |
           forge test
         id: test
+
+      - name: Check committed FHE contract binding
+        run: |
+          forge bind \
+            --bindings-path ./crates/fhe-contract-tests/src/bindings \
+            --module --single-file \
+            --select "^FHE\$"
+
+      - name: Run FHE contract on anvil tests
+        run: |
+          cargo build --release -p fhe-contract-tests 
+          cargo run --release -p fhe-contract-tests -- node &
+          sleep 10
+
+          cargo run --release -p fhe-contract-tests -- test
