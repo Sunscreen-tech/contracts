@@ -20,14 +20,14 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Restore forge binary if cached
+      - name: Restore foundry binaries if cached
         uses: actions/cache/restore@v3
         id: cache
         with:
           path: ~/.cargo/bin/forge
-          key: ${{ runner.os }}-${{ env.FOUNDRY_REV }}-forge-anvil
+          key: ${{ runner.os }}-${{ env.FOUNDRY_REV }}-foundry-binaries
 
-      - name: Install forge
+      - name: Install foundry binaries
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
           cargo install \
@@ -36,12 +36,12 @@ jobs:
             --profile local forge anvil \
             --locked
 
-      - name: Save new forge binary
+      - name: Save new foundry binaries
         if: steps.cache.outputs.cache-hit != 'true'
         uses: actions/cache/save@v3
         with:
-          path: ~/.cargo/bin/forge
-          key: ${{ runner.os }}-${{ env.FOUNDRY_REV }}-forge
+          path: ~/.cargo/bin/
+          key: ${{ runner.os }}-${{ env.FOUNDRY_REV }}-foundry-binaries
 
       - name: Run Forge build
         run: |
