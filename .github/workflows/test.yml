@@ -25,7 +25,7 @@ jobs:
         id: cache
         with:
           path: ~/.cargo/bin/forge
-          key: ${{ runner.os }}-${{ env.FOUNDRY_REV }}-forge
+          key: ${{ runner.os }}-${{ env.FOUNDRY_REV }}-forge-anvil
 
       - name: Install forge
         if: steps.cache.outputs.cache-hit != 'true'
@@ -33,7 +33,7 @@ jobs:
           cargo install \
             --git https://github.com/Sunscreen-tech/foundry \
             --rev ${{ env.FOUNDRY_REV }} \
-            --profile local forge \
+            --profile local forge anvil \
             --locked
 
       - name: Save new forge binary
